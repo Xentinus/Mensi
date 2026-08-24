@@ -404,7 +404,8 @@ tartalmazza; jelen lévő kulcs `null` értékkel = mező törlése; hiányzó k
 {
   "month": "2026-08",
   "range": { "firstMonth": "2026-02", "lastMonth": "2026-09" }, // léptetés/legördülő
-                                    // határai: első bejegyzés hónapja … aktuális+1
+                                    // határai: min(első bejegyzés, 5 év vissza) … aktuális+1
+                                    // — a visszamenőleges (backfill) rögzítés miatt
   "cycleDayOfToday": 14,            // null, ha a hónap nem tartalmazza a mai napot
   "hasData": true,                  // false → „Ehhez a hónaphoz még nincs adat"
   "days": [ {
@@ -491,7 +492,8 @@ toast mentés-visszajelzés Visszavonás gombbal és progress-csíkkal.
 Navigáció: mobil alsó tabbar 3 elemmel (Ma, Trendek, Bejegyzések) — az Esély a Ma
 nézet időzítés-kártyájáról nyílik, vissza-gombbal; a ≥1000px oldalsáv mind a 4
 nézetet listázza. A naptár hónap-léptetése és legördülője az API `range` mezőjéből
-épül (első bejegyzés hónapja … aktuális hónap + 1).
+épül (min(első bejegyzés hónapja, 5 év vissza) … aktuális hónap + 1) — így historikus
+adat (akár több évre visszamenőleg) is rögzíthető az első feltöltéskor.
 
 Empty state (0 lezárt ciklus): a design „Nincs még adat" képernyője — predikció nélkül,
 3 lépéses magyarázattal, „Első bejegyzés rögzítése" gombbal.

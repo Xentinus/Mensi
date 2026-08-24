@@ -10,6 +10,9 @@ public sealed record ModelInput(
 
 public static class ReadModelBuilder
 {
+    /// <summary>A naptár-navigáció visszamenőleges horizontja években (historikus feltöltéshez).</summary>
+    public const int BackfillYears = 5;
+
     public const string ConfidenceNote =
         "A becslés a Wilcox-féle napi valószínűségeken és az ovuláció-posterioron alapul; "
         + "a sáv a lezárt ciklusok számával szűkül.";
@@ -259,7 +262,12 @@ public static class ReadModelBuilder
                 log is not null && HasAnyEntry(log), date == input.Today);
         }).ToList();
 
-        var firstMonth = input.Logs.Count > 0 ? input.Logs[0].Date : input.Today;
+        // A naptár visszamenőleg is bejárható: az alsó határ a legkorábbi bejegyzés vagy
+        // 5 év vissza — amelyik korábbi. Az első feltöltéskor (üres DB) e nélkül nem lehetne
+        // múltbeli hónapra navigálni és historikus adatot rögzíteni.
+        var backfillHorizon = input.Today.AddYears(-BackfillYears);
+        var firstLog = input.Logs.Count > 0 ? input.Logs[0].Date : input.Today;
+        var firstMonth = firstLog < backfillHorizon ? firstLog : backfillHorizon;
         var lastMonth = input.Today.AddMonths(1);
         return new CalendarDto(
             $"{year:D4}-{month:D2}",

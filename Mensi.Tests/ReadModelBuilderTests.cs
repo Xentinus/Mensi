@@ -113,7 +113,8 @@ public class ReadModelBuilderTests
         Assert.Equal(31, c.Days.Count);
         Assert.Equal(DayCategory.Menstruation, c.Days.Single(d => d.Date == CurStart).Category);
         Assert.Contains(c.Days, d => d.Category is DayCategory.Ovulation or DayCategory.Fertile);
-        Assert.Equal("2026-06", c.Range.FirstMonth);
+        // A backfill-horizont (5 év) korábbi, mint az első bejegyzés → az nyer.
+        Assert.Equal("2021-08", c.Range.FirstMonth);
         Assert.Equal("2026-09", c.Range.LastMonth);
     }
 
