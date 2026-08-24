@@ -49,6 +49,20 @@
 - Böngészőből a `https://mensi.<domain>` cím megnyitása → Cloudflare Access login → az
   alkalmazás betöltődik.
 
+### 4.1 Lokális teszt (fejlesztői gépen)
+
+A teljes konténeres stack Access nélkül, kizárólag helyben:
+
+```bash
+CF_ACCESS_ENABLED=false POSTGRES_PASSWORD=devpass docker compose up -d
+```
+
+→ `http://127.0.0.1:8100` közvetlenül böngészhető. A `CF_ACCESS_ENABLED=false` a
+Cloudflare Access ellenőrzést teljesen kikapcsolja (az app hangos warningot logol róla)
+— **élesben soha ne kerüljön a `.env`-be false értékkel**. Jelszócserénél a régi
+adat-volume-ot törölni kell (`docker compose down -v`), mert a Postgres a jelszót az
+első inicializáláskor rögzíti.
+
 ## 5. Frissítés
 
 > **FIGYELEM:** a szerveren SOHA ne fusson sima `docker compose up -d` (az override

@@ -63,9 +63,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB:-mensi};Username=${POSTGRES_USER:-mensi};Password=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}"
-      # Az Access alkalmazás, aminek az assertionjét elfogadjuk. Nélküle a host el sem indul.
-      CloudflareAccess__TeamDomain: ${CF_ACCESS_TEAM_DOMAIN:?set CF_ACCESS_TEAM_DOMAIN in .env}
-      CloudflareAccess__Audience: ${CF_ACCESS_AUD:?set CF_ACCESS_AUD in .env}
+      # Az Access alkalmazás, aminek az assertionjét elfogadjuk. Bekapcsolt (default) Access
+      # mellett üres értékekkel a host el sem indul — a fail-fast az appban van (Program.cs).
+      # CF_ACCESS_ENABLED=false KIZÁRÓLAG lokális teszthez: a middleware teljesen kimarad.
+      CloudflareAccess__Enabled: ${CF_ACCESS_ENABLED:-true}
+      CloudflareAccess__TeamDomain: ${CF_ACCESS_TEAM_DOMAIN:-}
+      CloudflareAccess__Audience: ${CF_ACCESS_AUD:-}
       Audit__RetentionDays: ${AUDIT_RETENTION_DAYS:-365}
       Display__TimeZone: ${DISPLAY_TIMEZONE:-Europe/Budapest}
     healthcheck:

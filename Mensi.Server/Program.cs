@@ -42,12 +42,14 @@ try
     builder.Services.AddHostedService<AuditRetentionService>();
 
     // Cloudflare Access: élesben kötelező — verifikáció nélkül a host nem indulhat el.
+    // A CloudflareAccess__Enabled=false (CF_ACCESS_ENABLED) kizárólag lokális teszthez való.
     var accessOptions = builder.Configuration.GetSection(CloudflareAccessOptions.SectionName)
         .Get<CloudflareAccessOptions>() ?? new CloudflareAccessOptions();
-    if (!accessOptions.IsConfigured && !builder.Environment.IsDevelopment())
+    if (accessOptions.Enabled && !accessOptions.IsConfigured && !builder.Environment.IsDevelopment())
         throw new InvalidOperationException(
             "CloudflareAccess:TeamDomain és CloudflareAccess:Audience kötelező Development-en kívül "
-            + "(CF_ACCESS_* env változók, ld. .env.example).");
+            + "(CF_ACCESS_* env változók, ld. .env.example). Lokális teszthez a CF_ACCESS_ENABLED=false "
+            + "kapcsolja ki az ellenőrzést — élesben ezt soha ne használd.");
     builder.Services.Configure<CloudflareAccessOptions>(
         builder.Configuration.GetSection(CloudflareAccessOptions.SectionName));
     builder.Services.AddHttpClient(CloudflareAccessKeyStore.HttpClientName);
@@ -60,10 +62,14 @@ try
     // A /health az Access előtt: a konténer belülről, assertion nélkül ellenőrzi magát.
     app.MapGet("/health", () => Results.Text("OK"));
 
-    if (accessOptions.IsConfigured)
+    if (accessOptions.Enabled && accessOptions.IsConfigured)
         app.UseWhen(
             context => context.Request.Path != "/health",
             gated => gated.UseMiddleware<CloudflareAccessMiddleware>());
+    else if (!accessOptions.Enabled)
+        app.Logger.LogWarning(
+            "Cloudflare Access ellenőrzés EXPLICIT KIKAPCSOLVA (CloudflareAccess__Enabled=false) "
+            + "— kizárólag lokális teszthez, élesben SOHA!");
     else
         app.Logger.LogWarning("Cloudflare Access ellenőrzés KIKAPCSOLVA (nincs konfigurálva) — csak Development!");
 

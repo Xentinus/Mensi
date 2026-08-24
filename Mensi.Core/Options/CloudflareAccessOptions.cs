@@ -9,6 +9,12 @@ public class CloudflareAccessOptions
 {
     public const string SectionName = "CloudflareAccess";
 
+    /// <summary>
+    /// Lokális teszt-kapcsoló: false-ra a middleware kimarad és a kötelező-config ellenőrzés
+    /// sem fut. Alapértelmezetten bekapcsolva; élesben soha nem szabad false-ra állítani.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
     /// <summary>e.g. <c>https://myteam.cloudflareaccess.com</c> — also the expected token issuer.</summary>
     public string TeamDomain { get; set; } = "";
 

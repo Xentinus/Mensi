@@ -16,7 +16,8 @@ public sealed class CurrentUser(
         {
             var email = AccessIdentity.Of(accessor.HttpContext);
             if (email != AccessIdentity.Unknown) return email;
-            return !access.Value.IsConfigured && environment.IsDevelopment()
+            return !access.Value.Enabled
+                   || (!access.Value.IsConfigured && environment.IsDevelopment())
                 ? AccessIdentity.DevFallback
                 : AccessIdentity.Unknown;
         }
