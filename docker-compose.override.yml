@@ -2,5 +2,14 @@
 # A db portját publikálja localhostra, hogy a helyi `dotnet run` elérje.
 services:
   db:
+    # A backend háló a docker-compose.yml-ben internal: true, egy tisztán internal
+    # hálón lévő konténerhez pedig a Docker nem hoz létre host-port NAT-szabályt —
+    # a `ports:` lent így önmagában hatástalan marad. A frontend (nem-internal) háló
+    # hozzáadása ad a konténernek egy útvonalat, amin a publish valóban működik; a
+    # backend-et is felsoroljuk, mert a compose override itt merge-eli (nem
+    # felülírja) a listát, listázás nélkül a db lekerülne a backend hálóról.
+    networks:
+      - backend
+      - frontend
     ports:
       - "127.0.0.1:5432:5432"

@@ -547,8 +547,8 @@ UI szövegek magyarul, a design szövegei szó szerint átveendők, ahol létezn
 - **Middleware:** a PortfolioCMS CloudflareAccess tesztjei átemelve/adaptálva
 - **API integráció:** WebApplicationFactory + valós Postgres (Testcontainers);
   mezőnkénti upsert, ciklushatár-mozgatás period_start váltásra, audit-sor születés
-- **Frontend:** `vue-tsc` type-check, eslint/oxlint, vitest a számító/formázó
-  helperekre (dátum-sávok, rács-építés)
+- **Frontend:** `vue-tsc` type-check és vitest a számító/formázó helperekre
+  (lint tudatosan kihagyva v1-ben) (dátum-sávok, rács-építés)
 
 ## 11. Nem cél (v1)
 
