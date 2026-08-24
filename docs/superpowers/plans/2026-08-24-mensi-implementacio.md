@@ -2367,7 +2367,7 @@ public class CycleDeriverTests
         // 2..13. nap alacsony, 14..16. nap magas → ovuláció a 13. napon
         for (var d = 2; d <= 13; d++) logs.Add(Day(C1.AddDays(d - 1), bbt: 36.30m + (d % 4) * 0.03m));
         for (var d = 14; d <= 27; d++) logs.Add(Day(C1.AddDays(d - 1), bbt: 36.70m));
-        logs.Add(Day(C1.AddDays(27), periodStart: true, flow: FlowIntensity.Medium)); // 28 napos ciklus
+        logs.Add(Day(C1.AddDays(28), periodStart: true, flow: FlowIntensity.Medium)); // 28 napos ciklus
 
         var cycles = CycleDeriver.Derive(logs);
         Assert.Equal(13, cycles[0].OvulationConfirmed);
@@ -2381,7 +2381,7 @@ public class CycleDeriverTests
     {
         var logs = new List<DailyLogSnapshot> { Day(C1, periodStart: true, flow: FlowIntensity.Heavy) };
         for (var d = 2; d <= 27; d++) logs.Add(Day(C1.AddDays(d - 1), bbt: 36.35m)); // sima, nincs shift
-        logs.Add(Day(C1.AddDays(27), periodStart: true, flow: FlowIntensity.Medium));
+        logs.Add(Day(C1.AddDays(28), periodStart: true, flow: FlowIntensity.Medium));
 
         var c = CycleDeriver.Derive(logs)[0];
         Assert.True(c.Anovulatory);
