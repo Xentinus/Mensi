@@ -89,21 +89,30 @@ const dayNum = (iso: string) => Number(iso.slice(8))
 // --- Period Tracker PDF import ---
 const importInput = ref<HTMLInputElement | null>(null)
 const importFile = ref<File | null>(null)
-const importPreview = ref<ImportResult | null>(null)
+const importFound = ref<ImportResult | null>(null)   // az első (szűretlen) előnézet: mi van a fájlban
+const importPreview = ref<ImportResult | null>(null) // az aktuális kezdődátumhoz tartozó előnézet
+const importFrom = ref<string | null>(null)          // választott kezdődátum (ciklus-kezdet)
 const importBusy = ref(false)
 const importError = ref<string | null>(null)
 const importDone = ref<ImportResult | null>(null)
+
+const cycleYearLabel = (iso: string) => `${iso.slice(0, 4)}. ${formatDateShort(iso)}`
 
 async function pickImportFile(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0] ?? null
   if (!file) return
   importFile.value = file
+  importFound.value = null
   importPreview.value = null
+  importFrom.value = null
   importDone.value = null
   importError.value = null
   importBusy.value = true
   try {
-    importPreview.value = await api.importPcReport(file, true)
+    const found = await api.importPcReport(file, true)
+    importFound.value = found
+    importPreview.value = found
+    importFrom.value = found.cycles[0]?.startDate ?? null
   }
   catch {
     importError.value = 'A fájl nem dolgozható fel PDF-riportként.'
@@ -115,12 +124,30 @@ async function pickImportFile(event: Event) {
   }
 }
 
+async function changeImportFrom(event: Event) {
+  const from = (event.target as HTMLSelectElement).value
+  if (!importFile.value) return
+  importFrom.value = from
+  importBusy.value = true
+  importError.value = null
+  try {
+    importPreview.value = await api.importPcReport(importFile.value, true, from)
+  }
+  catch {
+    importError.value = 'Az előnézet frissítése nem sikerült.'
+  }
+  finally {
+    importBusy.value = false
+  }
+}
+
 async function applyImport() {
   if (!importFile.value) return
   importBusy.value = true
   importError.value = null
   try {
-    importDone.value = await api.importPcReport(importFile.value, false)
+    importDone.value = await api.importPcReport(importFile.value, false, importFrom.value ?? undefined)
+    importFound.value = null
     importPreview.value = null
     importFile.value = null
     store.refresh()
@@ -136,7 +163,9 @@ async function applyImport() {
 
 function cancelImport() {
   importFile.value = null
+  importFound.value = null
   importPreview.value = null
+  importFrom.value = null
   importError.value = null
 }
 </script>
@@ -206,19 +235,32 @@ function cancelImport() {
 
       <div v-if="importError" class="import-error">{{ importError }}</div>
 
-      <template v-if="importPreview">
+      <template v-if="importFound && importPreview">
         <div class="import-preview">
-          <div class="import-line"><b>{{ importPreview.cyclesFound }}</b> ciklus
-            <template v-if="importPreview.from"> ({{ formatDateShort(importPreview.from) }} – {{ formatDateShort(importPreview.to!) }})</template>
-            · <b>{{ importPreview.lhTestCount }}</b> LH-teszt</div>
-          <div class="import-line"><b>{{ importPreview.daysWritten }}</b> nap íródna
-            <template v-if="importPreview.fieldsSkipped > 0"> · {{ importPreview.fieldsSkipped }} mező kihagyva (már van adat)</template></div>
-          <div v-for="(w, i) in importPreview.warnings" :key="i" class="import-warning">⚠ {{ w }}</div>
+          <div class="import-line">A fájlban talált adat: <b>{{ importFound.cyclesFound }}</b> ciklus
+            <template v-if="importFound.from"> ({{ cycleYearLabel(importFound.from) }} – {{ cycleYearLabel(importFound.to!) }})</template>
+            · <b>{{ importFound.lhTestCount }}</b> LH-teszt</div>
+          <div v-for="(w, i) in importFound.warnings" :key="i" class="import-warning">⚠ {{ w }}</div>
         </div>
+
+        <label class="import-from-label" for="import-from">Importálás ekkortól (cikluskezdet):</label>
+        <select id="import-from" class="import-from" :value="importFrom ?? ''" :disabled="importBusy"
+          @change="changeImportFrom">
+          <option v-for="(c, i) in importFound.cycles" :key="c.startDate" :value="c.startDate">
+            {{ cycleYearLabel(c.startDate) }}{{ i === 0 ? ' — mind' : '' }}
+          </option>
+        </select>
+
+        <div class="import-preview">
+          <div class="import-line">Ezzel a választással: <b>{{ importPreview.cyclesFound }}</b> ciklus,
+            <b>{{ importPreview.lhTestCount }}</b> LH-teszt · <b>{{ importPreview.daysWritten }}</b> nap íródna
+            <template v-if="importPreview.fieldsSkipped > 0"> · {{ importPreview.fieldsSkipped }} mező kihagyva (már van adat)</template></div>
+        </div>
+
         <div class="import-actions">
           <button class="btn btn-ghost import-btn" :disabled="importBusy" @click="cancelImport">Mégse</button>
           <button class="btn btn-primary import-btn" :disabled="importBusy || importPreview.daysWritten === 0"
-            @click="applyImport">Importálás</button>
+            @click="applyImport">{{ importBusy ? 'Feldolgozás…' : 'Importálás' }}</button>
         </div>
       </template>
 
@@ -276,6 +318,11 @@ function cancelImport() {
 .import-line { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
 .import-warning { font-size: 12px; color: #8a5a00; }
 .import-actions { display: flex; gap: 10px; margin-top: 12px; }
+.import-from-label { display: block; margin-top: 14px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+.import-from {
+  width: 100%; margin-top: 7px; font: 600 13px 'Montserrat', sans-serif; color: var(--ink);
+  border: 0; background: #f5f7fe; border-radius: 10px; padding: 11px 12px; cursor: pointer;
+}
 .import-btn { margin-top: 12px; padding: 13px 0; font-size: 13px; }
 .import-actions .import-btn { flex: 1; margin-top: 0; }
 .sel-rows { display: flex; flex-direction: column; gap: 2px; margin-top: 12px; }

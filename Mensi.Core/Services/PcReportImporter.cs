@@ -21,16 +21,25 @@ public sealed class PcReportImporter(
 {
     private sealed record PlannedDay(bool? PeriodStart, FlowIntensity? Flow, LhTest? Lh);
 
-    public async Task<ImportResultDto> ImportAsync(byte[] pdf, bool dryRun, CancellationToken ct = default)
+    public async Task<ImportResultDto> ImportAsync(
+        byte[] pdf, bool dryRun, DateOnly? fromDate = null, CancellationToken ct = default)
     {
         var data = PcReportParser.Parse(PdfTextLines.Extract(pdf));
         var warnings = new List<string>(data.Warnings);
         var today = todayProvider.Today;
 
+        // Kezdődátum-szűrés: csak az ettől kezdődő ciklusok és tesztek kerülnek betöltésre.
+        var cycles = fromDate is DateOnly from
+            ? data.Cycles.Where(c => c.StartDate >= from).ToList()
+            : data.Cycles.ToList();
+        var lhTests = fromDate is DateOnly fromLh
+            ? data.LhTests.Where(t => t.Date >= fromLh).ToList()
+            : data.LhTests.ToList();
+
         // Terv: naponként mely mezők jönnének a riportból.
         var plan = new Dictionary<DateOnly, PlannedDay>();
         var futureSkipped = 0;
-        foreach (var cycle in data.Cycles)
+        foreach (var cycle in cycles)
         {
             for (var i = 0; i < cycle.PeriodDays; i++)
             {
@@ -41,7 +50,7 @@ public sealed class PcReportImporter(
                 plan[date] = new PlannedDay(i == 0 ? true : null, flow, plan.GetValueOrDefault(date)?.Lh);
             }
         }
-        foreach (var test in data.LhTests)
+        foreach (var test in lhTests)
         {
             if (test.Date > today) { futureSkipped++; continue; }
             var existing = plan.GetValueOrDefault(test.Date);
@@ -101,11 +110,12 @@ public sealed class PcReportImporter(
         var applied = !dryRun && daysWritten > 0;
         if (applied)
         {
-            audit.Add(user.Email, "import.pcReport", data.Cycles.Count > 0 ? data.Cycles[0].StartDate : today,
+            audit.Add(user.Email, "import.pcReport", cycles.Count > 0 ? cycles[0].StartDate : today,
                 new Dictionary<string, (object?, object?)>
                 {
-                    ["cyclesFound"] = (null, data.Cycles.Count),
-                    ["lhTests"] = (null, data.LhTests.Count),
+                    ["cyclesFound"] = (null, cycles.Count),
+                    ["lhTests"] = (null, lhTests.Count),
+                    ["fromDate"] = (null, fromDate?.ToString("yyyy-MM-dd")),
                     ["daysWritten"] = (null, daysWritten),
                     ["fieldsSkipped"] = (null, fieldsSkipped),
                 });
@@ -115,12 +125,13 @@ public sealed class PcReportImporter(
 
         return new ImportResultDto(
             applied,
-            data.Cycles.Count,
-            data.Cycles.Count > 0 ? data.Cycles[0].StartDate : null,
-            data.Cycles.Count > 0 ? data.Cycles[^1].StartDate : null,
-            data.LhTests.Count,
+            cycles.Count,
+            cycles.Count > 0 ? cycles[0].StartDate : null,
+            cycles.Count > 0 ? cycles[^1].StartDate : null,
+            lhTests.Count,
             daysWritten,
             fieldsSkipped,
+            cycles.Select(c => new ImportCycleDto(c.StartDate, c.PeriodDays)).ToList(),
             warnings);
     }
 }

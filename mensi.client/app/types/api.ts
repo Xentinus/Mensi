@@ -111,6 +111,8 @@ export interface Chance {
   history: { goodCount: number; totalCount: number; cycles: { startDate: string; timing: TimingSummary }[] } | null
 }
 
+export interface ImportCycle { startDate: string; periodDays: number }
+
 export interface ImportResult {
   applied: boolean
   cyclesFound: number
@@ -119,5 +121,6 @@ export interface ImportResult {
   lhTestCount: number
   daysWritten: number
   fieldsSkipped: number
+  cycles: ImportCycle[]
   warnings: string[]
 }

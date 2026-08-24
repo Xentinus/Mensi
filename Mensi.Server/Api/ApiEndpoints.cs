@@ -186,7 +186,7 @@ public static class ApiEndpoints
     }
 
     private static async Task<IResult> ImportPcReportAsync(
-        IFormFile? file, bool? dryRun, PcReportImporter importer, CancellationToken ct)
+        IFormFile? file, bool? dryRun, DateOnly? from, PcReportImporter importer, CancellationToken ct)
     {
         if (file is null || file.Length == 0)
             return Problem("Hiányzó PDF fájl.");
@@ -202,7 +202,7 @@ public static class ApiEndpoints
 
         try
         {
-            var result = await importer.ImportAsync(bytes, dryRun ?? false, ct);
+            var result = await importer.ImportAsync(bytes, dryRun ?? false, from, ct);
             return Results.Ok(result);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

@@ -253,6 +253,23 @@ public class ApiTests(PostgresFixture fixture) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Pc_report_import_respects_from_date()
+    {
+        using var dryContent = FixtureUpload();
+        var dry = await _client.PostAsync("/api/import/pc-report?dryRun=true&from=2026-01-24", dryContent);
+        var preview = await dry.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(3, preview.GetProperty("cyclesFound").GetInt32());
+        Assert.Equal("2026-01-24", preview.GetProperty("from").GetString());
+        Assert.Equal(3, preview.GetProperty("cycles").GetArrayLength());
+
+        using var applyContent = FixtureUpload();
+        await _client.PostAsync("/api/import/pc-report?from=2026-01-24", applyContent);
+        await using var db = fixture.CreateContext();
+        Assert.Equal(3, await db.DailyLogs.CountAsync(l => l.PeriodStart));
+        Assert.Equal(0, await db.DailyLogs.CountAsync(l => l.Date < new DateOnly(2026, 1, 24)));
+    }
+
+    [Fact]
     public async Task Pc_report_import_rejects_non_pdf()
     {
         using var content = new MultipartFormDataContent();
