@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Mensi.Core/Mensi.Core.csproj" />
+  <Project Path="Mensi.Server/Mensi.Server.csproj" />
+  <Project Path="Mensi.Tests/Mensi.Tests.csproj" />
+</Solution>
