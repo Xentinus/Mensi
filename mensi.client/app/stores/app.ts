@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia'
 import type { DailyLog, LogPatch, Overview } from '~/types/api'
-
-interface UndoPayload {
-  date: string
-  patch: LogPatch | null
-  events: { protected: boolean | null }[] | null
-}
+import { mergedUndoPayload, type UndoPayload } from '~/utils/undo'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
@@ -36,23 +31,33 @@ export const useAppStore = defineStore('app', {
 
     /** Mentés + undo-payload építés: a patch kulcsaihoz a mentés ELŐTTI értékek. */
     async saveLog(date: string, patch: LogPatch, before: DailyLog | null) {
-      const inverse: LogPatch = {}
-      for (const key of Object.keys(patch) as (keyof LogPatch)[]) {
-        // @ts-expect-error kulcsonként azonos típus a két oldalon
-        inverse[key] = before ? (before[key === 'moods' ? 'moods' : key] ?? null) : null
-      }
-      if ('periodStart' in patch) inverse.periodStart = before?.periodStart ?? false
       const saved = await useApi().saveLog(date, patch)
-      this.showToast({ date, patch: inverse, events: null })
+      this.showToast(mergedUndoPayload(date, patch, null, before))
       this.refresh()
       return saved
     },
 
     async saveIntercourse(date: string, events: { protected: boolean | null }[], before: DailyLog | null) {
       const saved = await useApi().saveIntercourse(date, events)
-      this.showToast({ date, patch: null, events: eventsOf(before) })
+      this.showToast(mergedUndoPayload(date, null, events, before))
       this.refresh()
       return saved
+    },
+
+    /** Mező-patch ÉS/VAGY együttlét mentése EGY körben, EGY (összevont) undo-payloaddal.
+     *  A teljes varázsló záró mentése ezt hívja — ha külön-külön showToast-olnánk a kettőt,
+     *  a második felülírná az első undo-payloadját, és a Visszavonás csak azt állítaná vissza. */
+    async saveDay(
+      date: string,
+      patch: LogPatch | null,
+      events: { protected: boolean | null }[] | null,
+      before: DailyLog | null,
+    ) {
+      if (!patch && !events) return
+      if (patch) await useApi().saveLog(date, patch)
+      if (events) await useApi().saveIntercourse(date, events)
+      this.showToast(mergedUndoPayload(date, patch, events, before))
+      this.refresh()
     },
 
     async undo() {

@@ -3,6 +3,7 @@ import type { CervicalMucus, CrampType, DailyLog, FlowIntensity, LhTest, LogPatc
 import { CRAMP_SEVERITY_LABELS, CRAMP_TYPE_LABELS, CRAMP_TYPE_ORDER, FIELD_LABELS, FIELD_ORDER, FLOW_LABELS, FLOW_ORDER, LH_LABELS, LH_NOTES, LH_ORDER, MOOD_EMOJI, MOOD_LABELS, MOOD_ORDER, MUCUS_LABELS, MUCUS_ORDER } from '~/utils/labels'
 import { fieldValue } from '~/utils/fieldValue'
 import { formatTemp } from '~/utils/format'
+import { composeBbt, decomposeBbt } from '~/utils/bbt'
 
 const store = useAppStore()
 const api = useApi()
@@ -26,20 +27,39 @@ const sexEvents = ref<{ protected: boolean | null }[]>([])
 const sexTouched = ref(false)
 const moods = ref<Mood[]>([])
 
-const bbtValue = computed(() => whole.value + tenths.value / 10 + hundredths.value / 100)
+const bbtValue = computed(() => composeBbt(whole.value, tenths.value, hundredths.value))
 
 watch(() => store.sheetOpen, async (open) => {
   if (!open || !store.sheetDate) return
+  const date = store.sheetDate
   step.value = store.sheetStep
   skipped.value = new Set()
   touched.value = new Set()
-  const log = await api.log(store.sheetDate)
+
+  // Szinkron reset ELŐSZÖR: amíg az api.log() függ, a sheet már látszik, de ne az előző
+  // session (más nap) értékeit mutassa, és egy korai koppintás se egy mindjárt felülírt
+  // állapotra landoljon.
+  before.value = null
+  whole.value = 36; tenths.value = 3; hundredths.value = 6; tempSet.value = false
+  mucus.value = null
+  lh.value = null
+  crampType.value = null
+  crampSeverity.value = null
+  flow.value = null
+  periodStart.value = false
+  sexEvents.value = []
+  sexTouched.value = false
+  moods.value = []
+
+  const log = await api.log(date)
+  // Ha közben bezárták a sheetet, vagy másik napra nyitották újra, ez a betöltés már elavult.
+  if (!store.sheetOpen || store.sheetDate !== date) return
+
   before.value = log
   tempSet.value = log.bbtCelsius !== null
   if (log.bbtCelsius !== null) {
-    whole.value = Math.floor(log.bbtCelsius)
-    tenths.value = Math.floor(log.bbtCelsius * 10) % 10
-    hundredths.value = Math.round(log.bbtCelsius * 100) % 10
+    const d = decomposeBbt(log.bbtCelsius)
+    whole.value = d.whole; tenths.value = d.tenths; hundredths.value = d.hundredths
   } else { whole.value = 36; tenths.value = 3; hundredths.value = 6 }
   mucus.value = log.cervicalMucus
   lh.value = log.lhTest
@@ -80,8 +100,12 @@ async function save() {
     return
   }
   const patch = buildPatch()
-  if (Object.keys(patch).length > 0) await store.saveLog(date, patch, before.value)
-  if (touched.value.has(5)) await store.saveIntercourse(date, sexEvents.value, before.value)
+  await store.saveDay(
+    date,
+    Object.keys(patch).length > 0 ? patch : null,
+    touched.value.has(5) ? sexEvents.value : null,
+    before.value,
+  )
 }
 
 function next() {
