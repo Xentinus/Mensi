@@ -2,10 +2,7 @@
 FROM node:22-alpine AS client
 WORKDIR /src/mensi.client
 COPY mensi.client/package.json mensi.client/package-lock.json ./
-# npm ci elhasal: a commitolt package-lock.json nincs szinkronban a package.json-nal
-# (cac/commander verzióütközés egy tranzitív függőségnél) — npm install-lal telepítünk,
-# ami ugyanazt a lockot használja alapnak, de nem követeli meg a bájtpontos egyezést.
-RUN npm install
+RUN npm ci
 COPY mensi.client/ ./
 RUN npm run generate
 
