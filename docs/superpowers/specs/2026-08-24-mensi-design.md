@@ -220,7 +220,14 @@ esély = Σ_o posterior(o) · [1 − Π_d (1 − p(d − o))]
 ahol d a logolt együttlét-napok. Kimenet a UI-ban: **minősítés + százalék** —
 „Jó / Közepes / Gyenge" címke és „becsült esély ebben a ciklusban: X%", mellette
 konfidencia-megjegyzés. Címke-küszöbök: <8% gyenge, 8–16% közepes, >16% jó.
-Lezárt ciklusokra ugyanez visszamenőleg számolódik (a trend-táblázat „Időzítés" oszlopa).
+Lezárt ciklusokra ugyanez visszamenőleg számolódik (a trend-táblázat „Időzítés"
+oszlopa), a megerősített (annak híján a becsült) ovulációs nap köré húzott
+posteriorral.
+
+Kontrafaktuális tipp (az Esély nézet „mit-ha" kártyaszövege): a motor kiszámolja,
+hogy a következő 1–2 napra felvett egy-egy együttlét melyik címke-küszöböt lépné át,
+és ebből ad mondatot („Ha ma vagy holnap van együttlét, a minősítés Jó lesz"); ha
+nincs elérhető javulás, nincs tipp.
 
 ### 4.6 Terhesség-jelzés
 
@@ -233,30 +240,223 @@ Jelzés („érdemes hCG-tesztet végezni"), ha:
 vagy: megerősített ovuláció után a BBT `μ_luteális + 3` napnál tovább emelkedett és
 nincs vérzés. A kimenet mindig jelzés-szövegű, sosem állítás.
 
-### 4.7 Ciklusfázis (UI címkékhez)
+### 4.7 Ciklusfázis és nap-kategóriák (UI-hoz)
 
-A design logikája szerint: Menstruáció (1…vérzés vége), Folliculáris szakasz,
-Termékeny ablak (fertilis ablak kezdete…ovuláció-ablak előtt), Ovulációs ablak
-(ovuláció [P15, P85]), Luteális fázis. A „hátralévő napok" pontsor ebből számolódik.
+A design nap-sávjainak megfelelő, egymást nem fedő kategóriák (az 5.1 `category`
+enumja ugyanez):
+
+- `menstruation`: a ciklus elejétől az összefüggő vérzéses napok végéig
+  (`flow_intensity ≥ enyhe`)
+- `fertile`: [ovuláció_P50 − 5, ovulációs ablak kezdete − 1] — üres, ha a posterior
+  olyan szűk, hogy a két határ átfedne
+- `ovulation`: az ovuláció-posterior [P15, P85]
+- `predictedPeriod`: a következő menstruáció [P15, P85]
+- `luteal`: az ovulációs ablak vége és a predictedPeriod kezdete között
+- `follicular`: minden egyéb nap a menstruáció után az ovulációs sávok előtt
+- `preCycle` / `unknown`: első rögzített ciklus előtti, illetve predikció nélküli napok
+
+Az aktuális fázis (a Ma nézet progressz-sávja) a mai nap kategóriájából jön; a
+„hátralévő napok" pontsor a fázis kezdő- és zárónapjából számolódik. A design
+címkéi: Menstruáció / Folliculáris szakasz / Termékeny ablak / Ovulációs ablak /
+Luteális fázis.
 
 ## 5. API (ASP.NET Core, JSON, magyar hibaüzenetek)
 
 Minden endpoint az Access middleware mögött, kivéve `GET /health` (a middleware előtt,
 a compose healthcheckhez — a PortfolioCMS mintájára).
 
-| Endpoint | Leírás |
-|---|---|
-| `GET /api/overview` | a Ma nézet teljes állapota: ciklusnap, fázis, ovuláció-ablak, menstruáció-sáv, konfidencia, termékeny ablak napjai együttlét-jelöléssel, időzítés-minősítés + %, tegnapi chip-ek, mai kitöltöttség, terhesség-jelzés, empty-state flag |
-| `GET /api/logs?from=&to=` | napi logok tartományra (naptár, trendek) intercourse eseményekkel |
-| `GET /api/logs/{date}` | egy nap teljes bejegyzése |
-| `PUT /api/logs/{date}` | mezőnkénti részleges upsert; body csak a küldött mezőket tartalmazza; `period_start` váltása ciklushatárt mozgat |
-| `PUT /api/logs/{date}/intercourse` | a nap eseménylistájának beállítása `[{protected}]` alakban |
-| `GET /api/cycles` | lezárt + nyitott ciklusok a történeti táblázathoz (hossz, eltérés, luteális, időzítés) |
-| `GET /api/trends` | ciklushossz-statisztika, BBT-sorok coverline-nal és kihagyás-jelzéssel, bejegyzés-rács |
-| `GET /health` | 200 OK, Access előtt |
+A válaszok a design prototípus render-logikájához igazodnak: minden nézet egy
+endpointból kapja meg a teljes állapotát. Felelősség-határ: a backend **szemantikus
+tényeket** ad (dátumok, enumok, számok, kategóriák) és azokat a mondatokat, amelyek
+modell-logikát kódolnak (headline, esély-magyarázat, mit-ha tipp, terhesség-jelzés);
+a **formázás** (vessző-tizedes, „aug. 23." dátumalak, színek, chip-szövegek,
+„nincs rögzítve"/„Kihagyva" feliratok) a frontendé.
 
-Validáció: BBT 34,00–39,00 °C; dátum nem lehet jövőbeli (a mai naphoz képest a
-konfigurált időzónában); enum-értékek tartományon belül. Hibák: ProblemDetails.
+JSON konvenciók: camelCase kulcsok; enumok camelCase stringként
+(`JsonStringEnumConverter`); dátum `yyyy-MM-dd`; szám ponttal (a vesszős megjelenítés
+frontend dolga).
+
+### 5.1 Közös DTO-k
+
+`DailyLogDto` — egy nap teljes bejegyzése:
+
+```jsonc
+{
+  "date": "2026-08-23",
+  "bbtCelsius": 36.36,            // null = nincs mérés
+  "bbtOutlier": false,            // a 4.4 automata kizárás jelzi (számított, nem tárolt)
+  "cervicalMucus": "eggWhite",    // dry | sticky | creamy | eggWhite | null
+  "lhTest": "positive",           // negative | positive | peak | null
+  "crampType": "abdomen",         // abdomen | back | breast | null
+  "crampSeverity": 2,             // 0–3 | null
+  "flowIntensity": "medium",      // none | spotting | light | medium | heavy | null
+  "periodStart": false,
+  "moods": ["cheerful", "longing"], // cheerful|calm|irritable|tired|sad|anxious|longing
+  "intercourse": [ { "id": 12, "protected": false } ],  // időrendben, max 6/nap
+  "updatedAt": "2026-08-23T06:41:00Z",
+  "updatedBy": "a@b.hu"
+}
+```
+
+Enum ↔ UI címke megfeleltetés (frontend konstans): mucus Száraz/Ragadós/Nedves/Nyúlós,
+LH Negatív/Pozitív/Csúcs, görcs Alhas/Derék/Mell + Nincs/Enyhe/Közepes/Erős, folyás
+Nincs/Pecsételő/Enyhe/Közepes/Erős, hangulat Vidám/Nyugodt/Ingerlékeny/Fáradt/Szomorú/
+Szorongó/Vágyakozó (emojival).
+
+`day category` — naptári nap ciklus-kategóriája (a Ma-nézet 5 hetes sávja és a naptár
+színezi): `preCycle` (első rögzített ciklus előtt) | `menstruation` (vérzéses napok a
+ciklus elejétől) | `follicular` | `fertile` (termékeny sáv az ovulációs ablak előtt) |
+`ovulation` (ovuláció-posterior [P15, P85]) | `luteal` | `predictedPeriod` (következő
+menstruáció [P15, P85]) | `unknown` (predikció nélküli jövő/adathiány).
+
+`timing` — időzítés-minősítés: `{ "label": "medium", "chancePercent": 12.4 }`
+(label: weak | medium | good; UI: Gyenge/Közepes/Jó).
+
+### 5.2 Endpointok
+
+**`GET /api/overview`** — a Ma nézet teljes állapota:
+
+```jsonc
+{
+  "today": "2026-08-23",
+  "isEmpty": false,               // 0 lezárt ciklus → true, a többi mező null/üres
+  "cycle": { "day": 14, "startDate": "2026-08-10" },
+  "phase": {                      // 4.7 szerinti aktuális fázis + progressz
+    "key": "ovulation", "label": "Ovulációs ablak",
+    "totalDays": 5, "elapsedDays": 1, "remainingDays": 4
+  },
+  "headline": "Termékeny ablakban vagy — az ovuláció 4 napon belül várható",
+  "ovulationWindow": { "from": "2026-08-23", "to": "2026-08-27" },
+  "nextPeriodWindow": { "from": "2026-09-04", "to": "2026-09-08" },
+  "confidence": "medium",         // low | medium | high (UI: alacsony/közepes/magas)
+  "pregnancyHint": null,          // vagy { "message": "..." } (4.6)
+  "strip": {                      // 5 hetes sáv: mai hét ±2 hét, hétfőtől
+    "from": "2026-08-03", "to": "2026-09-06",
+    "days": [ { "date": "2026-08-03", "cycleDay": null, "category": "preCycle",
+                "isToday": false } ]
+  },
+  "timing": {                     // időzítés-kártya
+    "label": "medium", "chancePercent": 12.4,
+    "daysRemaining": 4,           // a termékeny ablakból hátralévő napok
+    "intercourseTotal": 3,        // minden logolt együttlét az ablakban (megjelenítés;
+                                  //   az esély-számítás a védetteket kihagyja, 4.5)
+    "windowDays": [ { "date": "2026-08-18", "cycleDay": 9,
+                      "intercourseCount": 0, "isOvulationWindow": false,
+                      "isFuture": false } ]
+                                  // windowDays = fertile ∪ ovulation kategóriájú napok
+                                  //   (4.7), a design 10 napos sávja
+  },
+  "todayLog": { /* DailyLogDto vagy null */ },     // Mai bejegyzés lista + sheet prefill
+  "yesterdayLog": { /* DailyLogDto vagy null */ }  // Tegnap chip-sor
+}
+```
+
+**`GET /api/logs?from=&to=`** — `{ "days": [DailyLogDto] }`, csak a bejegyzéssel bíró
+napok. A trendek bejegyzés-hőtérképét és a naptár-pöttyöket a kliens ebből építi.
+
+**`GET /api/logs/{date}`** — DailyLogDto; ha nincs sor, minden mező null-lal tér vissza
+(nem 404 — a szerkesztő-sheet üres állapota).
+
+**`PUT /api/logs/{date}`** — mezőnkénti részleges upsert. A body csak a küldött mezőket
+tartalmazza; jelen lévő kulcs `null` értékkel = mező törlése; hiányzó kulcs = érintetlen.
+`periodStart` váltása ciklushatárt mozgat (recompute). Válasz: a frissített DailyLogDto
+(az overview-t a kliens újratölti). Görcs-konzisztencia: `crampSeverity = 0` esetén
+`crampType` törlődik.
+
+**`PUT /api/logs/{date}/intercourse`** — `{ "events": [ { "protected": false } ] }`
+(max 6 elem, a lista a nap teljes eseménysorát lecseréli). Válasz: DailyLogDto.
+
+**`GET /api/trends`** — a Trendek nézet állapota:
+
+```jsonc
+{
+  "stats": {                       // null, ha nincs lezárt ciklus
+    "averageLength": 28.0, "minLength": 26, "maxLength": 31, "stdDev": 1.6,
+    "averageLuteal": 13.2,
+    "loggedPercent": 86             // a lezárt ciklusok (utolsó 6) napjainak hány
+  },                                //   %-án van legalább egy rögzített mező
+  "cycles": [ {                     // minden lezárt ciklus, legújabb elöl
+    "startDate": "2026-07-14", "lengthDays": 27,
+    "deviationFromAverage": -1,     // kerekített egész nap
+    "lutealLength": 13,             // null, ha nincs megerősítve
+    "anovulatory": false,
+    "timing": { "label": "good", "chancePercent": 21.0 }
+  } ],
+  "bbt": {                          // aktuális ciklus BBT-táblázata
+    "coverline": 36.44,             // null, amíg nem számolható
+    "ovulationConfirmed": false,
+    "confirmedOvulationDate": null,
+    "excludedOutlierCount": 1, "missingDayCount": 2,
+    "rows": [ {                     // ciklus 1. napjától máig, minden nap
+      "date": "2026-08-10", "cycleDay": 1,
+      "value": 36.38,               // null = nincs mérés
+      "deltaFromCoverline": -0.06,  // null, ha nincs érték vagy coverline
+      "isOutlier": false, "aboveCoverline": false,
+      "marks": { "cervicalMucus": "dry", "lhTest": null }  // a Jelek oszlophoz
+    } ]
+  }
+}
+```
+
+**`GET /api/calendar?year=&month=`** — a Bejegyzések (naptár) nézet egy hónapja:
+
+```jsonc
+{
+  "month": "2026-08",
+  "range": { "firstMonth": "2026-02", "lastMonth": "2026-09" }, // léptetés/legördülő
+                                    // határai: első bejegyzés hónapja … aktuális+1
+  "cycleDayOfToday": 14,            // null, ha a hónap nem tartalmazza a mai napot
+  "hasData": true,                  // false → „Ehhez a hónaphoz még nincs adat"
+  "days": [ {
+    "date": "2026-08-01", "cycleDay": null, "category": "luteal",
+    "hasBbt": false, "intercourseCount": 0, "hasAnyEntry": false,
+    "isToday": false
+  } ]                               // jövőbeli napokra a kategória a predikcióból
+}
+```
+
+A kiválasztott nap paneljét a kliens `GET /api/logs/{date}`-ből tölti; jövőbeli napra
+nem kínál szerkesztést.
+
+**`GET /api/chance`** — az Esély nézet állapota:
+
+```jsonc
+{
+  "isEmpty": false,
+  "timing": { "label": "medium", "chancePercent": 12.4 },
+  "explanation": "Három együttlét esik a termékeny ablakba, két külön napon — a becsült ovuláció előtt 3 és 1 nappal.",
+  "confidenceNote": "A becslés a Wilcox-féle napi valószínűségeken és az ovuláció-posterioron alapul; szélessége a lezárt ciklusok számával csökken.",
+  "fertileWindow": {
+    "daysRemaining": 4,
+    "ovulationWindowTotal": 5, "ovulationWindowElapsed": 1,
+    "days": [ { "date": "2026-08-18", "cycleDay": 9, "intercourseCount": 1,
+                "isFuture": false, "isToday": false } ]
+  },
+  "whatIfHint": "Ha ma vagy holnap van együttlét, a minősítés Jó lesz.",
+                                    // kontrafaktuális: a motor kiszámolja, mely közeli
+                                    // napokon lévő együttlét lépné át a következő
+                                    // címke-küszöböt; null, ha nincs ilyen
+  "history": {
+    "goodCount": 2, "totalCount": 6,
+    "cycles": [ { "startDate": "2026-07-14",
+                  "timing": { "label": "good", "chancePercent": 21.0 } } ]
+  }
+}
+```
+
+A Módszertan blokk statikus frontend-szöveg, a %-döntéshez igazítva (az esély a
+Wilcox-adatokon alapuló becslés, nem orvosi termékenységi vizsgálat; életkort,
+spermaminőséget, gyógyszereket nem vesz figyelembe; hiányzó napot nem pótol).
+
+**`GET /health`** — 200 OK, Access előtt.
+
+### 5.3 Validáció és hibák
+
+- BBT: 35,00–38,99 °C (a design görgős pickere is ezt a tartományt adja)
+- dátum nem lehet jövőbeli írásnál (a konfigurált időzóna szerinti mai naphoz képest);
+  múltbeli bármely nap szerkeszthető
+- `crampSeverity` 0–3; enum-értékek tartományon belül; intercourse események száma ≤6/nap
+- hibák: ProblemDetails, magyar `detail` szöveggel
 
 Visszavonás (toast „Visszavonás"): kliensoldali — a kliens a mentés előtti értéket
 küldi vissza ugyanarra az endpointra. Mindkét írás auditálódik.
@@ -281,11 +481,17 @@ Nézetek (útvonalak) a design 1:1 követésével:
 - `/esely` — időzítés-minősítés + becsült esély %, termékeny ablak napjai,
   hátralévő ablak kártya, korábbi ciklusok időzítés-sávjai, Módszertan blokk
 
-Közös komponensek: napló-sheet (8 lépés: Testhő görgős pickerrel → Nyák → LH → Görcs
-[hely + intenzitás] → Folyás [+ „Ma kezdődött a menstruáció"] → Együttlét [számláló +
-eseményenkénti „védekezéssel" kapcsoló] → Hangulat [multi-select chipek] → Összegzés),
-minden lépés kihagyható; egymezős mód ugyanebből a sheetből; toast mentés-visszajelzés
-Visszavonás gombbal és progress-csíkkal; alsó tabbar (mobil) / oldalsáv (≥1000px).
+Közös komponensek: napló-sheet (8 lépés: Testhő görgős pickerrel [35–38 egész +
+tized + század] → Nyák → LH → Görcs [hely + intenzitás; „Nincs" intenzitásnál a
+helyválasztó letiltva] → Folyás [+ „Ma kezdődött a menstruáció"] → Együttlét
+[számláló, max 6, eseményenkénti „védekezéssel" kapcsoló] → Hangulat [multi-select
+chipek] → Összegzés), minden lépés kihagyható; egymezős mód ugyanebből a sheetből;
+toast mentés-visszajelzés Visszavonás gombbal és progress-csíkkal.
+
+Navigáció: mobil alsó tabbar 3 elemmel (Ma, Trendek, Bejegyzések) — az Esély a Ma
+nézet időzítés-kártyájáról nyílik, vissza-gombbal; a ≥1000px oldalsáv mind a 4
+nézetet listázza. A naptár hónap-léptetése és legördülője az API `range` mezőjéből
+épül (első bejegyzés hónapja … aktuális hónap + 1).
 
 Empty state (0 lezárt ciklus): a design „Nincs még adat" képernyője — predikció nélkül,
 3 lépéses magyarázattal, „Első bejegyzés rögzítése" gombbal.
