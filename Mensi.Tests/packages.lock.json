@@ -338,7 +338,8 @@
       "mensi.server": {
         "type": "Project",
         "dependencies": {
-          "Mensi.Core": "[1.0.0, )"
+          "Mensi.Core": "[1.0.0, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[10.0.10, )"
         }
       }
     }

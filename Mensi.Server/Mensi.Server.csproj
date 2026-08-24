@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Az EF Core tooling megköveteli, hogy a startup projekt (ez) is közvetlenül hivatkozzon
+         a Design csomagra (a Mensi.Core-beli, PrivateAssets=all példány nem száll át ide). Emellett
+         ez húzza fel az EF Core verzió padlóját 10.0.10-re itt is, ami elkerüli a CS1705
+         verzióütközést a Mensi.Core-ban lefordított (Design által 10.0.10-re kényszerített)
+         összeállítással szemben — a Npgsql csomag saját padlója csak 10.0.4 lenne. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Mensi.Core\Mensi.Core.csproj" />
   </ItemGroup>
 
