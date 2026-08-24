@@ -80,8 +80,9 @@ const selHasAny = computed(() => selRows.value.some(r => r.value !== null))
 const selectedDay = computed(() =>
   current.value?.days.find(d => d.date === selectedDate.value) ?? null)
 const isFutureSelected = computed(() => {
-  const today = store.overview?.today
-  return !!(today && selectedDate.value && selectedDate.value > today)
+  // fallback amíg az overview betölt; UTC-eltérés legfeljebb átmeneti
+  const today = store.overview?.today ?? new Date().toISOString().slice(0, 10)
+  return !!(selectedDate.value && selectedDate.value > today)
 })
 const dayNum = (iso: string) => Number(iso.slice(8))
 </script>
