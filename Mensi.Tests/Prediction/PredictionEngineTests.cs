@@ -80,6 +80,32 @@ public class PredictionEngineTests
     }
 
     [Fact]
+    public void Overdue_cycle_conditions_on_no_period_yet()
+    {
+        // 33. nap, semmilyen biomarker: a "még nincs menstruáció" evidencia miatt a
+        // menstruáció-sáv nem kezdődhet a múltban, és az ovuláció-posterior későbbre tolódik.
+        var logs = new List<DailyLogSnapshot>();
+        for (var d = 1; d <= 33; d++)
+        {
+            logs.Add(new DailyLogSnapshot(
+                Start.AddDays(d - 1), null, null, null, null, null,
+                d <= 5 ? FlowIntensity.Medium : null, d == 1, 0, 0));
+        }
+        var today = Start.AddDays(32); // 33. ciklusnap
+        var input = new EngineInput(
+            [Closed(-84, 28, 13), Closed(-56, 27, 14), Closed(-29, 29, 13)],
+            Start, logs, today);
+        var p = PredictionEngine.Evaluate(input)!;
+
+        Assert.True(p.PeriodFrom >= today);
+        // ~28 napos történet mellett a feltétel nélküli ovuláció-medián ~14-15 lenne;
+        // a survival-súlyozás után legalább 33−18 = 15 fölé kell tolódnia.
+        var p50Day = p.OvulationP50.DayNumber - Start.DayNumber + 1;
+        Assert.True(p50Day >= 15);
+        Assert.Null(p.PregnancyHint); // nincs BBT-adat → egyik szabály sem sülhet el
+    }
+
+    [Fact]
     public void No_pregnancy_hint_mid_cycle() =>
         Assert.Null(PredictionEngine.Evaluate(Input())!.PregnancyHint);
 

@@ -179,12 +179,20 @@ képest):
 A szorzatok után normalizálás. A táblázat értékei a specifikáció részei — a golden
 tesztek ezekre épülnek; hangolásuk későbbi iteráció.
 
+**„Még nincs menstruáció" evidencia:** a nyitott ciklus eltelt hossza maga is megfigyelés.
+Ha a mai ciklusnap d, a menstruáció d előtt nem kezdődhetett el, ezért a posterior minden
+o napjára rászorzódik a P(luteális ≥ d − o) túlélési súly, a menstruáció-eloszlás pedig a
+d napra csonkolódik. E nélkül a modell a múltba jósolna menstruációt egy elhúzódó
+ciklusnál. A terhesség-jelzés „késik-e" kérdése (4.6) a feltétel NÉLKÜLI eloszlás P85-éhez
+mér — a feltételes sáv definíció szerint sosem lehet lekésett.
+
 **Kimenetek:**
 
-- ovulációs ablak: a posterior [P15, P85] intervalluma (dátumra vetítve)
+- ovulációs ablak: a (fentiek szerint súlyozott) posterior [P15, P85] intervalluma
+  (dátumra vetítve)
 - következő menstruáció eloszlása: `P(period = t) = Σ_o posterior(o) · P_luteális(t−o)`,
   ahol P_luteális a személyes Normal(μ_l; σ_l²) [9, 18] napra vágva és diszkretizálva;
-  megjelenítve [P15, P85] sáv
+  a mai ciklusnapra csonkolva; megjelenítve [P15, P85] sáv
 - termékeny ablak: [ovuláció_P50 − 5, ovulációs ablak vége (P85)] — a 4.7 kategóriákkal összhangban
 - konfidencia-címke a posterior 70%-os intervallum-szélességéből: ≤4 nap „magas",
   ≤7 nap „közepes", fölötte „alacsony"; 3-nál kevesebb lezárt ciklusnál legfeljebb

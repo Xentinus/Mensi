@@ -67,11 +67,21 @@ public static class PredictionEngine
         var posterior = OvulationPosterior.Compute(
             cycleMean - lutealMean, cycleVar + lutealVar, observations, bbt);
 
+        // Feltétel NÉLKÜLI menstruáció-eloszlás: a terhesség-jelzés „késik-e" kérdéséhez
+        // az kell, hova esett volna a menstruáció a naptári modell szerint.
+        var (_, _, unconditionedPerToDay) =
+            PeriodDistribution.NextPeriod(posterior, lutealMean, lutealVar);
+
+        // „Még nincs menstruáció" evidencia: a mai napig nem kezdődött el, tehát
+        // o + luteális ≥ mai ciklusnap — a korai ovulációs napok tömege ennyivel csökken.
+        posterior = posterior.Reweighted(o =>
+            PeriodDistribution.LutealSurvival(cycleDay - o, lutealMean, lutealVar));
+
         var ovuFromDay = posterior.Quantile(0.15);
         var ovuP50Day = posterior.Quantile(0.50);
         var ovuToDay = posterior.Quantile(0.85);
         var (perFromDay, perP50Day, perToDay) =
-            PeriodDistribution.NextPeriod(posterior, lutealMean, lutealVar);
+            PeriodDistribution.NextPeriod(posterior, lutealMean, lutealVar, minPeriodDay: cycleDay);
 
         var fertileFromDay = Math.Min(ovuP50Day - 5, ovuFromDay);
 
@@ -85,7 +95,7 @@ public static class PredictionEngine
 
         var mensEnd = MenstruationEnd(input.CurrentCycleLogs, start);
         var confidence = ConfidenceRule.From(ovuToDay - ovuFromDay, stats.ClosedCount);
-        var pregnancy = PregnancyHint(input, bbt, D(perToDay), lutealMean, start, today);
+        var pregnancy = PregnancyHint(input, bbt, D(unconditionedPerToDay), lutealMean, start, today);
 
         var prediction = new CyclePrediction(
             start, cycleDay,

@@ -6,17 +6,14 @@ public static class PeriodDistribution
 {
     public const int LutealMin = 9, LutealMax = 18;
 
+    /// <param name="minPeriodDay">
+    /// A „még nincs menstruáció" evidencia: a mai ciklusnapnál korábbi kezdet lehetetlen,
+    /// ezért az eloszlás erre a napra csonkolódik. 0 = nincs feltétel.
+    /// </param>
     public static (int P15, int P50, int P85) NextPeriod(
-        Posterior ovulation, double lutealMean, double lutealVariance)
+        Posterior ovulation, double lutealMean, double lutealVariance, int minPeriodDay = 0)
     {
-        // Diszkretizált, [9,18]-ra vágott luteális eloszlás.
-        var v = Math.Max(lutealVariance, 0.0001);
-        var luteal = new double[LutealMax - LutealMin + 1];
-        for (var i = 0; i < luteal.Length; i++)
-        {
-            var x = LutealMin + i - lutealMean;
-            luteal[i] = Math.Exp(-x * x / (2 * v));
-        }
+        var luteal = LutealWeights(lutealMean, lutealVariance);
         var lutealSum = luteal.Sum();
 
         var minDay = Posterior.GridMin + LutealMin;
@@ -28,6 +25,17 @@ public static class PeriodDistribution
             if (po <= 0) continue;
             for (var i = 0; i < luteal.Length; i++)
                 period[o + LutealMin + i - minDay] += po * luteal[i] / lutealSum;
+        }
+
+        for (var day = minDay; day < Math.Min(minPeriodDay, maxDay + 1); day++)
+            period[day - minDay] = 0;
+
+        // Ha minden tömeg a csonkolás alá esett (a ciklus messze túlnyúlt a modellen),
+        // a legkorábbi még lehetséges nap marad: "mostantól bármikor".
+        if (period.Sum() <= 0)
+        {
+            var fallback = Math.Min(Math.Max(minPeriodDay, minDay), maxDay);
+            return (fallback, fallback, fallback);
         }
 
         return (Quantile(0.15), Quantile(0.50), Quantile(0.85));
@@ -43,6 +51,32 @@ public static class PeriodDistribution
             }
             return maxDay;
         }
+    }
+
+    /// <summary>P(luteális ≥ minLuteal) a [9,18]-ra vágott, diszkretizált eloszlás szerint —
+    /// az ovuláció-posterior „még nincs menstruáció" súlyozásához.</summary>
+    public static double LutealSurvival(int minLuteal, double lutealMean, double lutealVariance)
+    {
+        if (minLuteal <= LutealMin) return 1;
+        if (minLuteal > LutealMax) return 0;
+        var luteal = LutealWeights(lutealMean, lutealVariance);
+        var total = luteal.Sum();
+        double tail = 0;
+        for (var l = minLuteal; l <= LutealMax; l++) tail += luteal[l - LutealMin];
+        return tail / total;
+    }
+
+    private static double[] LutealWeights(double lutealMean, double lutealVariance)
+    {
+        // Diszkretizált, [9,18]-ra vágott luteális eloszlás.
+        var v = Math.Max(lutealVariance, 0.0001);
+        var luteal = new double[LutealMax - LutealMin + 1];
+        for (var i = 0; i < luteal.Length; i++)
+        {
+            var x = LutealMin + i - lutealMean;
+            luteal[i] = Math.Exp(-x * x / (2 * v));
+        }
+        return luteal;
     }
 }
 
