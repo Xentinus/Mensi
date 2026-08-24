@@ -1,0 +1,97 @@
+# Log-rotáció minden szolgáltatásra: a json-file driver különben korlátlanul nő.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    networks:
+      - backend
+    # Kis adatmennyiséghez (évi ~365 sor) szabott, memórialimit-arányos beállítások.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - effective_cache_size=192MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=32MB
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mensi}
+      POSTGRES_USER: ${POSTGRES_USER:-mensi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-mensi} -d $${POSTGRES_DB:-mensi}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    image: ${APP_IMAGE:-mensi:local}
+    build:
+      context: .
+      dockerfile: Mensi.Server/Dockerfile
+    restart: unless-stopped
+    networks:
+      - backend
+      - frontend
+    # Loopback only: kifelé a cloudflared tunnel route visz, előtte a CF Access alkalmazással.
+    # A VPS IP-jére küldött közvetlen kérés így el sem éri a konténert.
+    ports:
+      - "127.0.0.1:8100:8080"
+    logging: *logging
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "1.0"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB:-mensi};Username=${POSTGRES_USER:-mensi};Password=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}"
+      # Az Access alkalmazás, aminek az assertionjét elfogadjuk. Nélküle a host el sem indul.
+      CloudflareAccess__TeamDomain: ${CF_ACCESS_TEAM_DOMAIN:?set CF_ACCESS_TEAM_DOMAIN in .env}
+      CloudflareAccess__Audience: ${CF_ACCESS_AUD:?set CF_ACCESS_AUD in .env}
+      Audit__RetentionDays: ${AUDIT_RETENTION_DAYS:-365}
+      Display__TimeZone: ${DISPLAY_TIMEZONE:-Europe/Budapest}
+    healthcheck:
+      # Az image-ben nincs curl/wget, ezért bash /dev/tcp. A /health az Access-ellenőrzés
+      # előtt van, különben a konténer belülről nem tudná megnézni magát.
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          'exec 3<>/dev/tcp/127.0.0.1/8080 && printf "GET /health HTTP/1.0\r\n\r\n" >&3 && grep -q "200 OK" <&3',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  # A db csak ezen a hálón él; internal → se a hoszt, se az internet felől nincs útvonal.
+  # A db-re SOHA ne kerüljön ports: bejegyzés.
+  backend:
+    internal: true
+  frontend:
+
+volumes:
+  pgdata:

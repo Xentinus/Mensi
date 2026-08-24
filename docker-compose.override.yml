@@ -1,0 +1,6 @@
+# Development-only overrides — docker compose automatikusan betölti.
+# A db portját publikálja localhostra, hogy a helyi `dotnet run` elérje.
+services:
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"

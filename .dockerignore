@@ -1,0 +1,14 @@
+# A build context a repo gyökere (context: .). Enélkül a helyi bin/obj/node_modules
+# bekerülne a COPY Mensi.Core/, COPY Mensi.Server/ és COPY mensi.client/ rétegekbe,
+# és felülírná a konténeren belül frissen restore-olt/telepített, Linuxra épült verziót.
+**/bin/
+**/obj/
+mensi.client/node_modules/
+mensi.client/.nuxt/
+mensi.client/.output/
+
+# Nem kell az image buildhez
+Mensi.Tests/
+docs/
+.superpowers/
+.git/
