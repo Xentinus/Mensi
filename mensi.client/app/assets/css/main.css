@@ -1,0 +1,67 @@
+:root {
+  --primary: #5a5cd6;
+  --primary-hover: #4a4cbd;
+  --primary-deep: #3a3c9e;
+  --primary-ink: #2c2d63;
+  --tint: #eef1ff;
+  --bg: #f6f7ff;
+  --surface: #f5f7fe;
+  --ink: #21243d;
+  --ink-2: #464b6b;
+  --ink-3: #545a7a;
+  --ink-4: #626884;
+  --muted: #8f96b5;
+  --plum: #6f71d6;
+  --plum-ink: #3a3c9e;
+  --lavender: #b1b2ff;
+  --light-blue: #c6d6ff;
+  --line: #eef1ff;
+  --shadow-card: 0 1px 2px rgba(33, 36, 61, .05), 0 6px 20px rgba(33, 36, 61, .04);
+  --radius-card: 18px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: var(--radius-card);
+  padding: 18px;
+  box-shadow: var(--shadow-card);
+}
+
+.chip {
+  display: inline-block;
+  border-radius: 99px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 99px;
+  font: 700 13.5px 'Montserrat', sans-serif;
+  padding: 17px 0;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-primary { background: var(--primary); color: #ffffff; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-ghost { background: var(--bg); color: var(--ink-2); font-weight: 600; }
+.btn-ghost:hover { background: var(--tint); }
+
+.section-title { font-size: 13px; font-weight: 700; }
+.muted { color: var(--ink-3); }
+
+.noscroll { scrollbar-width: none; }
+.noscroll::-webkit-scrollbar { display: none; }
