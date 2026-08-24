@@ -11,7 +11,7 @@ watch(() => store.refreshTick, async () => { chance.value = await api.chance() }
 const METHOD_NOTES = [
   'Az ovulációs ablak a lezárt ciklusok hosszából és luteális fázisából jön, az LH-teszttel és a nyákkal korrigálva.',
   'A százalék a Wilcox-féle, ovuláció-relatív napi valószínűségekből számított becslés — nem orvosi termékenységi vizsgálat.',
-  'A hiányzó napokat nem pótolja becsléssel: ahol nincs adat, ott „nincs bejegyzés" szerepel.',
+  'A hiányzó napokat nem pótolja becsléssel: ahol nincs adat, ott „nincs bejegyzés” szerepel.',
   'Nem veszi figyelembe az életkort, spermaminőséget, gyógyszereket és semmilyen orvosi tényezőt.',
 ]
 const short = (iso: string) => formatDateShort(iso).replace(' ', '')

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDateLong, formatDateShort, formatDelta, formatRange, formatTemp, monthTitle } from '~/utils/format'
+import { addDays, formatDateLong, formatDateShort, formatDelta, formatRange, formatTemp, monthTitle } from '~/utils/format'
 
 describe('format', () => {
   it('temp uses comma and °C', () => {
@@ -23,5 +23,14 @@ describe('format', () => {
   })
   it('month title', () => {
     expect(monthTitle('2026-08')).toBe('2026. augusztus')
+  })
+  it('addDays steps back a day without crossing into UTC (regression: used to return 2026-08-22)', () => {
+    expect(addDays('2026-08-24', -1)).toBe('2026-08-23')
+  })
+  it('addDays rolls over the end of a month', () => {
+    expect(addDays('2026-08-31', 1)).toBe('2026-09-01')
+  })
+  it('addDays rolls over the end of a year', () => {
+    expect(addDays('2026-01-01', -1)).toBe('2025-12-31')
   })
 })

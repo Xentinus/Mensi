@@ -139,7 +139,7 @@ public static class PredictionEngine
         new(key, key switch
         {
             DayCategory.Menstruation => "Menstruáció",
-            DayCategory.Follicular => "Folliculáris szakasz",
+            DayCategory.Follicular => "Follikuláris szakasz",
             DayCategory.Fertile => "Termékeny ablak",
             DayCategory.Ovulation => "Ovulációs ablak",
             DayCategory.Luteal => "Luteális fázis",

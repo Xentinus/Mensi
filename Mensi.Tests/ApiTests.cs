@@ -165,6 +165,17 @@ public class ApiTests(PostgresFixture fixture) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Intercourse_put_with_missing_events_is_rejected()
+    {
+        // {} body -> request.Events deserializál null-ra (nincs required constructor-tag), a
+        // Count-hozzáférés NRE-t dobna a null-guard nélkül.
+        var date = Today.AddDays(-1);
+        using var content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json");
+        var response = await _client.PutAsync($"/api/logs/{date:yyyy-MM-dd}/intercourse", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Overview_goes_from_empty_to_predicted()
     {
         var empty = await _client.GetFromJsonAsync<JsonElement>("/api/overview");

@@ -51,6 +51,9 @@
 
 ## 5. Frissítés
 
+> **FIGYELEM:** a szerveren SOHA ne fusson sima `docker compose up -d` (az override
+> betöltődne és publikálná a db portot); mindig `docker compose -f docker-compose.yml up -d`.
+
 - Új verzió kiadása a szerveren:
   ```bash
   git pull && docker compose -f docker-compose.yml build && docker compose -f docker-compose.yml up -d

@@ -148,6 +148,7 @@ public static class ApiEndpoints
         DateOnly date, SetIntercourseRequest request, MensiDbContext db, TodayProvider todayProvider,
         CurrentUser user, AuditWriter audit, CycleRecomputeService recompute, TimeProvider clock)
     {
+        if (request.Events is null) return Problem("Hiányzó events lista.");
         var today = todayProvider.Today;
         if (date > today) return Problem("Jövőbeli napra nem rögzíthető bejegyzés.");
         if (request.Events.Count > 6) return Problem("Naponta legfeljebb 6 esemény rögzíthető.");

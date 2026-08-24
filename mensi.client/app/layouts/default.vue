@@ -62,6 +62,7 @@ const headerRight = computed(() => {
       </nav>
     </div>
 
+    <div v-if="store.errorMessage" class="error-banner">{{ store.errorMessage }}</div>
     <SaveToast />
     <LogSheet />
   </div>
@@ -93,6 +94,11 @@ const headerRight = computed(() => {
   font-size: 11px; font-weight: 500;
 }
 .tab-item.active { color: var(--primary); background: var(--tint); font-weight: 700; }
+.error-banner {
+  position: fixed; left: 16px; right: 16px; bottom: 150px; margin: 0 auto; max-width: 420px;
+  background: #b3261e; color: #fff; border-radius: 12px; padding: 10px 16px;
+  font-size: 13px; text-align: center; z-index: 70;
+}
 
 @media (min-width: 1000px) {
   .side {

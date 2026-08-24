@@ -62,7 +62,7 @@ try
 
     if (accessOptions.IsConfigured)
         app.UseWhen(
-            context => !context.Request.Path.StartsWithSegments("/health"),
+            context => context.Request.Path != "/health",
             gated => gated.UseMiddleware<CloudflareAccessMiddleware>());
     else
         app.Logger.LogWarning("Cloudflare Access ellenőrzés KIKAPCSOLVA (nincs konfigurálva) — csak Development!");

@@ -14,12 +14,20 @@ export const useAppStore = defineStore('app', {
     undoPayload: null as UndoPayload | null,
     toastTimer: null as ReturnType<typeof setTimeout> | null,
     refreshTick: 0, // a nézetek erre figyelnek: mentés után újratöltenek
+    errorMessage: null as string | null,
+    errorTimer: null as ReturnType<typeof setTimeout> | null,
   }),
   actions: {
     async loadOverview() {
       this.loading = true
-      try { this.overview = await useApi().overview() }
-      finally { this.loading = false }
+      try {
+        this.overview = await useApi().overview()
+        this.clearError()
+      } catch {
+        this.showError()
+      } finally {
+        this.loading = false
+      }
     },
     openSheet(date: string, step = 0, single = false) {
       this.sheetDate = date
@@ -31,17 +39,29 @@ export const useAppStore = defineStore('app', {
 
     /** Mentés + undo-payload építés: a patch kulcsaihoz a mentés ELŐTTI értékek. */
     async saveLog(date: string, patch: LogPatch, before: DailyLog | null) {
-      const saved = await useApi().saveLog(date, patch)
-      this.showToast(mergedUndoPayload(date, patch, null, before))
-      this.refresh()
-      return saved
+      try {
+        const saved = await useApi().saveLog(date, patch)
+        this.clearError()
+        this.showToast(mergedUndoPayload(date, patch, null, before))
+        this.refresh()
+        return saved
+      } catch {
+        this.showError()
+        return null
+      }
     },
 
     async saveIntercourse(date: string, events: { protected: boolean | null }[], before: DailyLog | null) {
-      const saved = await useApi().saveIntercourse(date, events)
-      this.showToast(mergedUndoPayload(date, null, events, before))
-      this.refresh()
-      return saved
+      try {
+        const saved = await useApi().saveIntercourse(date, events)
+        this.clearError()
+        this.showToast(mergedUndoPayload(date, null, events, before))
+        this.refresh()
+        return saved
+      } catch {
+        this.showError()
+        return null
+      }
     },
 
     /** Mező-patch ÉS/VAGY együttlét mentése EGY körben, EGY (összevont) undo-payloaddal.
@@ -54,19 +74,29 @@ export const useAppStore = defineStore('app', {
       before: DailyLog | null,
     ) {
       if (!patch && !events) return
-      if (patch) await useApi().saveLog(date, patch)
-      if (events) await useApi().saveIntercourse(date, events)
-      this.showToast(mergedUndoPayload(date, patch, events, before))
-      this.refresh()
+      try {
+        if (patch) await useApi().saveLog(date, patch)
+        if (events) await useApi().saveIntercourse(date, events)
+        this.clearError()
+        this.showToast(mergedUndoPayload(date, patch, events, before))
+        this.refresh()
+      } catch {
+        this.showError()
+      }
     },
 
     async undo() {
       const payload = this.undoPayload
       if (!payload) return
       this.hideToast()
-      if (payload.patch) await useApi().saveLog(payload.date, payload.patch)
-      if (payload.events) await useApi().saveIntercourse(payload.date, payload.events)
-      this.refresh()
+      try {
+        if (payload.patch) await useApi().saveLog(payload.date, payload.patch)
+        if (payload.events) await useApi().saveIntercourse(payload.date, payload.events)
+        this.clearError()
+        this.refresh()
+      } catch {
+        this.showError()
+      }
     },
 
     showToast(payload: UndoPayload) {
@@ -79,6 +109,15 @@ export const useAppStore = defineStore('app', {
       this.toastVisible = false
       this.undoPayload = null
       if (this.toastTimer) clearTimeout(this.toastTimer)
+    },
+    showError() {
+      if (this.errorTimer) clearTimeout(this.errorTimer)
+      this.errorMessage = 'Nem sikerült a mentés vagy a frissítés — próbáld újra.'
+      this.errorTimer = setTimeout(() => this.clearError(), 5000)
+    },
+    clearError() {
+      this.errorMessage = null
+      if (this.errorTimer) clearTimeout(this.errorTimer)
     },
     refresh() {
       this.refreshTick++

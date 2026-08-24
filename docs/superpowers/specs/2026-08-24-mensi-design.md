@@ -185,7 +185,7 @@ tesztek ezekre épülnek; hangolásuk későbbi iteráció.
 - következő menstruáció eloszlása: `P(period = t) = Σ_o posterior(o) · P_luteális(t−o)`,
   ahol P_luteális a személyes Normal(μ_l; σ_l²) [9, 18] napra vágva és diszkretizálva;
   megjelenítve [P15, P85] sáv
-- termékeny ablak: [ovuláció_P50 − 5, ovuláció_P85 + 1]
+- termékeny ablak: [ovuláció_P50 − 5, ovulációs ablak vége (P85)] — a 4.7 kategóriákkal összhangban
 - konfidencia-címke a posterior 70%-os intervallum-szélességéből: ≤4 nap „magas",
   ≤7 nap „közepes", fölötte „alacsony"; 3-nál kevesebb lezárt ciklusnál legfeljebb
   „közepes"
