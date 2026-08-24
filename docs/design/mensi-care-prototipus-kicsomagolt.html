@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="19d7066b-44ed-4de9-a88b-d4a4c6287f88"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<style>/* cyrillic-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("1b4a32e0-24ee-469d-9c1a-43765eb30fe5") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("8103fb06-a538-47de-91fd-ec3949d911ab") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("0fe4ea41-241c-4ad3-8d0a-039fe20a5e1e") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("353b096e-e95c-4e34-9dbd-a7878b008660") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("ac81e055-aaba-48a0-a790-5137545f6b9e") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("1b4a32e0-24ee-469d-9c1a-43765eb30fe5") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("8103fb06-a538-47de-91fd-ec3949d911ab") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("0fe4ea41-241c-4ad3-8d0a-039fe20a5e1e") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("353b096e-e95c-4e34-9dbd-a7878b008660") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("ac81e055-aaba-48a0-a790-5137545f6b9e") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("1b4a32e0-24ee-469d-9c1a-43765eb30fe5") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("8103fb06-a538-47de-91fd-ec3949d911ab") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("0fe4ea41-241c-4ad3-8d0a-039fe20a5e1e") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("353b096e-e95c-4e34-9dbd-a7878b008660") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("ac81e055-aaba-48a0-a790-5137545f6b9e") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("1b4a32e0-24ee-469d-9c1a-43765eb30fe5") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("8103fb06-a538-47de-91fd-ec3949d911ab") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("0fe4ea41-241c-4ad3-8d0a-039fe20a5e1e") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("353b096e-e95c-4e34-9dbd-a7878b008660") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("ac81e055-aaba-48a0-a790-5137545f6b9e") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("1b4a32e0-24ee-469d-9c1a-43765eb30fe5") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("8103fb06-a538-47de-91fd-ec3949d911ab") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("0fe4ea41-241c-4ad3-8d0a-039fe20a5e1e") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("353b096e-e95c-4e34-9dbd-a7878b008660") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("ac81e055-aaba-48a0-a790-5137545f6b9e") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f6f7ff; font-family: 'Montserrat', sans-serif; color: #21243d; -webkit-font-smoothing: antialiased; }
+  a { color: #5a5cd6; text-decoration: none; }
+  a:hover { color: #4a4cbd; }
+  .noscroll::-webkit-scrollbar { display: none; }
+  .noscroll { scrollbar-width: none; }
+  @keyframes riseUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes toastIn { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes toastShrink { from { width: 100%; } to { width: 0%; } }
+  .toastwrap { position: fixed; left: 16px; right: 16px; bottom: 84px; z-index: 60; display: flex; justify-content: center; align-items: flex-start; }
+  .toastwrap > div { animation: toastIn .28s cubic-bezier(.2,.85,.3,1); }
+  .toastbar { animation: toastShrink 3.4s linear forwards; }
+  @media (min-width: 1000px) { .toastwrap { left:auto; right:28px; bottom:auto; top:24px; justify-content:flex-end; } .toastwrap > div { max-width:380px; } }
+  .shell { display: flex; flex-direction: column; min-height: 100vh; }
+  .side { display: none; }
+  .tabbar { display: flex; }
+  .cols2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .pad { padding: 16px 16px 30px; }
+  .sheet { position: fixed; inset: 0; }
+  .sheetbox { position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; border-radius: 26px 26px 0 0; animation: riseUp .3s cubic-bezier(.2,.85,.3,1); }
+  @media (min-width: 1000px) {
+    .shell { flex-direction: row; align-items: stretch; }
+    .side { display: flex; }
+    .tabbar { display: none; }
+    .cols2 { grid-template-columns: 1fr 1fr; gap: 18px; }
+    .pad { padding: 32px 40px 48px; max-width: 1920px; margin: 0 auto; }
+    .sheetbox { left: 50%; right: auto; bottom: auto; top: 50%; transform: translate(-50%,-50%); width: 470px; max-height: 86%; border-radius: 26px; animation: none; }
+  }
+</style>
+</helmet>
+<div class="shell" style="background:#f6f7ff">
+
+  <div class="side" style="width:224px;flex-shrink:0;flex-direction:column;background:#ffffff;position:sticky;top:0;height:100vh;box-shadow:1px 0 0 rgba(33,36,61,.06)">
+    <div style="padding:22px 20px 18px;display:flex;align-items:center;gap:11px">
+      <div style="width:30px;height:30px;background:#5a5cd6;border-radius:10px;display:grid;place-items:center;color:#ffffff;font-weight:700;font-size:14px">M</div>
+      <span style="font-weight:700;font-size:17px;letter-spacing:-.01em">Mensi</span>
+    </div>
+    <div style="padding:6px 12px;display:flex;flex-direction:column;gap:2px">
+      <sc-for list="{{ sideNav }}" as="t" hint-placeholder-count="4">
+        <div sc-camel-on-click="{{ t.go }}" style="padding:11px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:11px;background:{{ t.bg }}" style-hover="background:#eef1ff">
+          <svg sc-camel-view-box="0 0 24 24" width="20" height="20" fill="none" stroke="{{ t.color }}" stroke-width="{{ t.stroke }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="{{ t.icon }}"></path>
+            <path d="{{ t.icon2 }}"></path>
+          </svg>
+          <span style="font-size:13.5px;font-weight:{{ t.weight }};color:{{ t.color }}">{{ t.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <div style="background:#ffffff;padding:14px 16px;display:flex;align-items:center;gap:11px;flex-shrink:0;position:sticky;top:0;z-index:5;box-shadow:0 1px 0 rgba(33,36,61,.06)">
+      <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+        <div sc-camel-on-click="{{ goBack }}" style="cursor:pointer;width:30px;height:30px;border-radius:10px;background:#eef1ff;display:grid;place-items:center;font-size:14px;font-weight:700;color:#5a5cd6" style-hover="background:#e0eae8">←</div>
+      </sc-if>
+      <span style="font-weight:700;font-size:16px;letter-spacing:-.01em">{{ headerTitle }}</span>
+      <span style="margin-left:auto;font-size:12px;font-weight:600;color:#545a7a">{{ headerRight }}</span>
+    </div>
+
+    <div class="pad" style="flex:1;display:flex;flex-direction:column;gap:14px;width:100%">
+
+      <sc-if value="{{ isMa }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:12px;font-family:'Montserrat',sans-serif;color:#21243d">
+
+  <sc-if value="{{ maPanel.isEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="background:#eef1ff;border-radius:20px;padding:22px 18px">
+        <div style="font-size:12.5px;font-weight:600;color:#5a5cd6">Nincs még adat</div>
+        <div style="font-size:22px;font-weight:700;margin-top:8px;letter-spacing:-.02em;line-height:1.25">Előrejelzéshez legalább egy teljes ciklus kell.</div>
+        <div style="font-size:13.5px;color:#2b2e63;line-height:1.6;margin-top:9px;text-wrap:pretty">Amíg nincs elég mérés, az app nem mutat becsült ovulációt és menstruációt — inkább semmit, mint pontatlant.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ maPanel.emptySteps }}" as="s" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:13px;background:#ffffff;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+            <div style="width:26px;height:26px;border-radius:99px;background:#eef1ff;display:grid;place-items:center;font-size:12px;font-weight:700;color:#5a5cd6;flex-shrink:0">{{ s.n }}</div>
+            <div style="font-size:13px;color:#464b6b;line-height:1.5;text-wrap:pretty">{{ s.txt }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <button sc-camel-on-click="{{ maPanel.open }}" style="width:100%;background:#5a5cd6;border:0;border-radius:99px;color:#ffffff;font:700 14px 'Montserrat';padding:18px 0;cursor:pointer" style-hover="background:#4a4cbd">Első bejegyzés rögzítése</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ maPanel.hasData }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <div style="border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 22px rgba(33,36,61,.07)">
+        <div style="background:#5a5cd6;padding:20px 18px 18px">
+          <div style="display:flex;align-items:center">
+            <span style="font-size:12px;font-weight:600;color:#d2daff">Ciklus 14. nap</span>
+            <span style="margin-left:auto;font-size:11.5px;font-weight:500;color:#b1b2ff">aug. 10. óta</span>
+          </div>
+          <div style="font-size:25px;font-weight:700;color:#ffffff;letter-spacing:-.025em;line-height:1.18;margin-top:10px">Termékeny ablakban vagy — az ovuláció 4 napon belül várható</div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <div style="flex:1;background:rgba(255,255,255,.16);border-radius:12px;padding:11px 13px">
+              <div style="font-size:10.5px;font-weight:600;color:#d2daff">Ovuláció</div>
+              <div style="font-size:15px;font-weight:700;color:#ffffff;margin-top:3px">aug. 23–27.</div>
+            </div>
+            <div style="flex:1;background:rgba(255,255,255,.16);border-radius:12px;padding:11px 13px">
+              <div style="font-size:10.5px;font-weight:600;color:#d2daff">Következő menstruáció</div>
+              <div style="font-size:15px;font-weight:700;color:#ffffff;margin-top:3px">szept. 4–8.</div>
+            </div>
+          </div>
+          <div style="margin-top:14px">
+            <div style="display:flex;align-items:baseline">
+              <span style="font-size:11px;font-weight:600;color:#d2daff">{{ maPanel.phaseLabel }}</span>
+              <span style="margin-left:auto;font-size:11px;font-weight:700;color:#ffffff">{{ maPanel.remainingLabel }}</span>
+            </div>
+            <div style="display:flex;gap:4px;margin-top:7px">
+              <sc-for list="{{ maPanel.remainingDots }}" as="d" hint-placeholder-count="5">
+                <div style="flex:1;height:7px;border-radius:99px;background:{{ d.bg }}"></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="background:#ffffff;padding:18px">
+          <div style="display:flex;align-items:center">
+            <span style="font-size:12.5px;font-weight:600;color:#545a7a">{{ maPanel.weekRange }}</span>
+            <span style="margin-left:auto;font-size:11px;font-weight:600;color:#4a4cbd;background:#eef1ff;border-radius:99px;padding:5px 10px">konfidencia: közepes</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:14px auto 0;max-width:400px">
+            <sc-for list="{{ maPanel.weekHeads }}" as="w" hint-placeholder-count="7">
+              <div style="text-align:center;font-size:10px;font-weight:600;color:#626884;padding-bottom:2px">{{ w }}</div>
+            </sc-for>
+            <sc-for list="{{ maPanel.cycleDays }}" as="d" hint-placeholder-count="35">
+              <div style="aspect-ratio:1;border-radius:10px;background:{{ d.bg }};box-shadow:{{ d.ring }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px">
+                <span style="font-size:8px;font-weight:600;color:{{ d.tagFg }};line-height:1">{{ d.tag }}</span>
+                <span style="font-size:11.5px;font-weight:{{ d.weight }};color:{{ d.fg }};line-height:1.1">{{ d.n }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:9px 13px;margin-top:15px">
+            <sc-for list="{{ maPanel.cycleLegend }}" as="l" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:3px;background:{{ l.bg }}"></div><span style="font-size:11px;font-weight:500;color:#464b6b">{{ l.label }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div sc-camel-on-click="{{ maPanel.openEsely }}" style="background:#ffffff;border-radius:18px;padding:18px;cursor:pointer;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)" style-hover="box-shadow:0 1px 2px rgba(33,36,61,.08),0 8px 26px rgba(33,36,61,.1)">
+        <div style="display:flex;align-items:baseline">
+          <span style="font-size:12.5px;font-weight:600;color:#545a7a">Időzítés ebben a ciklusban</span>
+          <span style="margin-left:auto;font-size:11px;font-weight:700;color:#4a4cbd;background:#eef1ff;border-radius:99px;padding:4px 10px">Közepes</span>
+        </div>
+        <div style="display:flex;gap:5px;margin-top:14px">
+          <sc-for list="{{ maPanel.timingDays }}" as="d" hint-placeholder-count="10">
+            <div style="flex:1;height:26px;border-radius:8px;background:{{ d.bg }};box-shadow:{{ d.ring }};display:flex;align-items:center;justify-content:center">
+              <sc-if value="{{ d.hasCount }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:9px;font-weight:700;color:#ffffff">{{ d.count }}×</span>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:5px;margin-top:5px">
+          <sc-for list="{{ maPanel.timingDays }}" as="d" hint-placeholder-count="10">
+            <div style="flex:1;text-align:center;font-size:8.5px;font-weight:{{ d.dateWeight }};color:{{ d.dateColor }}">{{ d.short }}</div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:9px">
+          <div style="width:8px;height:8px;border-radius:2px;box-shadow:inset 0 0 0 2px #5a5cd6"></div>
+          <span style="font-size:10.5px;font-weight:500;color:#8f96b5">Ovulációs ablak — itt számít legtöbbet az együttlét</span>
+        </div>
+        <div style="display:flex;align-items:center;margin-top:9px">
+          <span style="font-size:12px;color:#464b6b">3 együttlét · 4 nap hátra</span>
+          <span style="margin-left:auto;font-size:12px;font-weight:700;color:#5a5cd6">Részletek</span>
+        </div>
+      </div>
+
+      <div style="background:#ffffff;border-radius:18px;padding:17px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+        <div style="font-size:12.5px;font-weight:600;color:#545a7a">Tegnap · aug. 22.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:11px">
+          <sc-for list="{{ maPanel.yesterday }}" as="y" hint-placeholder-count="5">
+            <span style="font-size:12px;font-weight:600;color:{{ y.color }};background:{{ y.bg }};border-radius:99px;padding:6px 12px">{{ y.text }}</span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background:#ffffff;border-radius:18px;padding:17px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+        <div style="display:flex;align-items:center">
+          <span style="font-size:13px;font-weight:700">Mai bejegyzés</span>
+          <span style="margin-left:auto;font-size:11.5px;font-weight:600;color:#545a7a">{{ maPanel.loggedCount }}</span>
+        </div>
+        <div style="font-size:12px;color:#545a7a;margin-top:5px;line-height:1.45">Külön-külön is rögzíthető — csak azt töltsd ki, ami ma történt.</div>
+        <div style="display:flex;flex-direction:column;gap:3px;margin-top:13px">
+          <sc-for list="{{ maPanel.fields }}" as="f" hint-placeholder-count="6">
+            <div sc-camel-on-click="{{ f.go }}" style="display:flex;align-items:center;gap:12px;padding:12px 13px;border-radius:12px;background:{{ f.bg }};cursor:pointer" style-hover="background:#eef1ff">
+              <span style="font-size:12.5px;font-weight:600;color:#464b6b;width:84px;flex-shrink:0">{{ f.label }}</span>
+              <span style="font-size:13.5px;font-weight:{{ f.weight }};color:{{ f.fg }}">{{ f.value }}</span>
+              <span style="margin-left:auto;font-size:11.5px;font-weight:700;color:#5a5cd6;white-space:nowrap">{{ f.action }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <button sc-camel-on-click="{{ maPanel.openAll }}" style="width:100%;margin-top:13px;background:#eef1ff;border:0;border-radius:99px;color:#3a3c9e;font:700 13px 'Montserrat';padding:15px 0;cursor:pointer" style-hover="background:#dfe4ff">Mind végigkérdezése</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+      </sc-if>
+
+      <sc-if value="{{ isTrendek }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="background:#ffffff;border-radius:20px;padding:20px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+            <div style="font-size:12.5px;font-weight:600;color:#545a7a">Ciklushossz · utolsó 6 ciklus</div>
+            <div style="display:flex;align-items:baseline;gap:9px;margin-top:7px">
+              <span style="font-size:38px;font-weight:700;letter-spacing:-.035em;line-height:1">28</span>
+              <span style="font-size:14px;font-weight:600;color:#464b6b">nap az átlag</span>
+            </div>
+            <div style="font-size:13px;color:#464b6b;line-height:1.55;margin-top:8px;text-wrap:pretty">A ciklusaid <span style="font-weight:700;color:#21243d">26 és 31 nap</span> között mozogtak, ±1,6 nap szórással.</div>
+
+            <div style="position:relative;margin-top:28px;height:58px">
+              <div style="position:absolute;left:0;right:0;top:22px;height:10px;border-radius:99px;background:#f0f2fb"></div>
+              <div style="position:absolute;left:{{ bandLeft }};width:{{ bandW }};top:22px;height:10px;border-radius:99px;background:#c6d6ff"></div>
+              <div style="position:absolute;left:{{ avgLeft }};top:14px;width:3px;height:26px;margin-left:-1.5px;border-radius:99px;background:#5a5cd6"></div>
+              <sc-for list="{{ lenMarks }}" as="m" hint-placeholder-count="6">
+                <div style="position:absolute;left:{{ m.left }};top:19px;width:16px;height:16px;margin-left:-8px;border-radius:99px;background:{{ m.bg }};border:2px solid #ffffff;box-shadow:0 1px 3px rgba(33,36,61,.2)"></div>
+              </sc-for>
+              <sc-for list="{{ lenAxis }}" as="a" hint-placeholder-count="5">
+                <div style="position:absolute;left:{{ a.left }};top:40px;transform:translateX(-50%);font-size:10px;font-weight:600;color:#626884">{{ a.n }}</div>
+              </sc-for>
+              <div style="position:absolute;left:{{ avgLeft }};top:-4px;transform:translateX(-50%);font-size:10px;font-weight:700;color:#5a5cd6;white-space:nowrap">átlag 28</div>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:22px;flex-wrap:wrap">
+              <sc-for list="{{ lenStats }}" as="t" hint-placeholder-count="4">
+                <div style="flex:1;min-width:78px;background:{{ t.bg }};border-radius:14px;padding:13px 12px;text-align:center">
+                  <div style="font-size:18px;font-weight:700;letter-spacing:-.02em;color:{{ t.fg }}">{{ t.value }}</div>
+                  <div style="font-size:10.5px;font-weight:600;color:#545a7a;margin-top:2px">{{ t.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;padding:22px 0 9px;border-top:1px solid #eef1ff;margin-top:20px">
+              <span style="flex:1.4;font-size:10.5px;font-weight:600;color:#545a7a">Kezdet</span>
+              <span style="width:58px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a;text-align:right">Hossz</span>
+              <span style="width:78px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a;text-align:right">Átlaghoz</span>
+              <span style="width:62px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a;text-align:right">Luteális</span>
+              <span style="width:72px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a;text-align:right">Időzítés</span>
+            </div>
+            <sc-for list="{{ historyRows }}" as="h" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;padding:11px 8px;margin:0 -8px;border-radius:10px;background:{{ h.rowBg }};border-top:1px solid #eef1ff">
+                <span style="flex:1.4;font-size:13px;font-weight:600">{{ h.label }}</span>
+                <span style="width:58px;flex-shrink:0;font-size:13.5px;font-weight:700;text-align:right">{{ h.len }}</span>
+                <span style="width:78px;flex-shrink:0;text-align:right"><span style="font-size:11px;font-weight:700;color:{{ h.devFg }};background:{{ h.devBg }};border-radius:99px;padding:4px 9px;white-space:nowrap">{{ h.dev }}</span></span>
+                <span style="width:62px;flex-shrink:0;font-size:12.5px;font-weight:500;color:#464b6b;text-align:right">{{ h.lut }}</span>
+                <span style="width:72px;flex-shrink:0;text-align:right"><span style="font-size:11px;font-weight:700;color:{{ h.timingColor }};background:{{ h.timingBg }};border-radius:99px;padding:4px 9px">{{ h.timing }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#ffffff;border-radius:20px;padding:20px 18px 16px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <span style="font-size:13px;font-weight:700">Bazális testhő</span>
+              <span style="margin-left:auto;font-size:11px;font-weight:600;color:#4a4cbd;background:#eef1ff;border-radius:99px;padding:5px 11px">Coverline 36,44 °C</span>
+            </div>
+
+            <div style="display:flex;padding:16px 0 9px">
+              <span style="width:30px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a">Nap</span>
+              <span style="width:52px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a">Dátum</span>
+              <span style="width:80px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a">Mérés</span>
+              <span style="width:56px;flex-shrink:0;font-size:10.5px;font-weight:600;color:#545a7a;text-align:right">Eltérés</span>
+              <span style="flex:1;font-size:10.5px;font-weight:600;color:#545a7a;text-align:right">Jelek</span>
+            </div>
+            <sc-for list="{{ bbtRows }}" as="r" hint-placeholder-count="14">
+              <div style="display:flex;align-items:center;padding:9px 8px;margin:0 -8px;border-radius:10px;background:{{ r.rowBg }};border-top:1px solid #eef1ff">
+                <span style="width:30px;flex-shrink:0;font-size:12.5px;font-weight:700;color:{{ r.dayFg }}">{{ r.day }}</span>
+                <span style="width:52px;flex-shrink:0;font-size:11.5px;font-weight:500;color:#545a7a">{{ r.date }}</span>
+                <span style="width:80px;flex-shrink:0;font-size:13.5px;font-weight:{{ r.tempW }};color:{{ r.tempFg }};white-space:nowrap">{{ r.temp }}</span>
+                <span style="width:56px;flex-shrink:0;font-size:12px;font-weight:600;color:{{ r.deltaFg }};text-align:right">{{ r.delta }}</span>
+                <span style="flex:1;text-align:right;font-size:10.5px;font-weight:600;color:#4a4cbd">{{ r.marks }}</span>
+              </div>
+            </sc-for>
+
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+              <span style="font-size:11.5px;font-weight:600;color:#4a4cbd;background:#eef1ff;border-radius:99px;padding:7px 12px">1 kiugró érték kihagyva a coverline-ból</span>
+              <span style="font-size:11.5px;font-weight:600;color:#464b6b;background:#e3e8fb;border-radius:99px;padding:7px 12px">2 nap kimaradt</span>
+            </div>
+            <div style="margin-top:12px;background:#eef1ff;border-radius:14px;padding:13px 14px;font-size:12.5px;color:#2b2e63;line-height:1.55">Az ovuláció hőemelkedéssel <span style="font-weight:700">még nem erősödött meg</span> — ehhez három egymást követő magasabb érték kell a coverline fölött.</div>
+          </div>
+
+          <div style="background:#ffffff;border-radius:20px;padding:20px 0 16px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+            <div style="padding:0 18px;display:flex;align-items:baseline">
+              <span style="font-size:13px;font-weight:700">Bejegyzések</span>
+              <span style="margin-left:auto;font-size:11.5px;font-weight:500;color:#545a7a">görgethető →</span>
+            </div>
+            <div class="noscroll" style="overflow-x:auto;margin-top:14px;padding:0 18px">
+              <div style="min-width:540px">
+                <div style="display:flex;gap:2px;padding-left:80px;margin-bottom:6px">
+                  <sc-for list="{{ gridDays }}" as="d" hint-placeholder-count="14">
+                    <div style="flex:1;min-width:20px;text-align:center;font-size:9px;font-weight:600;color:{{ d.color }}">{{ d.n }}</div>
+                  </sc-for>
+                </div>
+                <sc-for list="{{ gridRows }}" as="row" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:center;margin-bottom:4px">
+                    <div style="width:80px;flex-shrink:0;font-size:11px;font-weight:600;color:#464b6b">{{ row.label }}</div>
+                    <div style="flex:1;display:flex;gap:2px">
+                      <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="14">
+                        <div style="flex:1;min-width:20px;height:20px;border-radius:6px;background:{{ c.bg }};display:grid;place-items:center;font-size:8.5px;font-weight:700;color:{{ c.fg }}">{{ c.txt }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:14px 18px 0;font-size:11.5px;color:#545a7a;line-height:1.5">Halvány cella = aznap nem volt bejegyzés. A telítettség az intenzitást jelöli.</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isNaptar }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="background:#ffffff;border-radius:20px;padding:20px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)" data-comment-anchor="9cbebfd3d3-div">
+            <div style="display:flex;align-items:center;gap:8px">
+              <button sc-camel-on-click="{{ calPrev }}" aria-label="Előző hónap" style="width:34px;height:34px;flex-shrink:0;border-radius:10px;border:0;background:#f5f7fe;color:#464b6b;font:700 15px 'Montserrat';cursor:pointer" style-hover="background:#eef1ff">‹</button>
+              <sc-raw-select sc-camel-on-change="{{ calSelect }}" value="{{ calMonthIdx }}" style="flex:1;min-width:0;text-align:center;text-align-last:center;font:700 13px 'Montserrat';color:#21243d;border:0;background:#f5f7fe;border-radius:10px;padding:9px 4px;cursor:pointer">
+                <sc-for list="{{ monthOptions }}" as="m" hint-placeholder-count="5">
+                  <option value="{{ m.value }}">{{ m.label }}</option>
+                </sc-for>
+              </sc-raw-select>
+              <button sc-camel-on-click="{{ calNext }}" aria-label="Következő hónap" style="width:34px;height:34px;flex-shrink:0;border-radius:10px;border:0;background:#f5f7fe;color:#464b6b;font:700 15px 'Montserrat';cursor:pointer" style-hover="background:#eef1ff">›</button>
+            </div>
+            <sc-if value="{{ calIsAnchor }}" hint-placeholder-val="{{ true }}">
+              <div style="text-align:center;margin-top:8px;font-size:11.5px;font-weight:500;color:#545a7a">ciklus 14. nap</div>
+            </sc-if>
+            <sc-if value="{{ calNoData }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;margin-top:8px;font-size:11.5px;font-weight:500;color:#8f96b5">Ehhez a hónaphoz még nincs rögzített adat</div>
+            </sc-if>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:16px auto 0;max-width:440px">
+              <sc-for list="{{ weekHeads }}" as="w" hint-placeholder-count="7">
+                <div style="text-align:center;font-size:10.5px;font-weight:600;color:#545a7a;padding-bottom:4px">{{ w }}</div>
+              </sc-for>
+              <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="36">
+                <div sc-camel-on-click="{{ c.pick }}" style="aspect-ratio:1;background:{{ c.bg }};border-radius:12px;box-shadow:{{ c.ring }};cursor:{{ c.cursor }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+                  <span style="font-size:12.5px;font-weight:{{ c.weight }};color:{{ c.fg }}">{{ c.n }}</span>
+                  <div style="display:flex;gap:3px;height:4px">
+                    <sc-for list="{{ c.dots }}" as="d" hint-placeholder-count="2">
+                      <div style="width:4px;height:4px;border-radius:99px;background:{{ d }}"></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:13px;margin-top:18px">
+              <sc-for list="{{ calLegend }}" as="l" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:3px;background:{{ l.bg }}"></div><span style="font-size:11.5px;font-weight:500;color:#464b6b">{{ l.label }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background:#ffffff;border-radius:20px;padding:20px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)" data-comment-anchor="0b41fe2551-div">
+            <div style="display:flex;align-items:baseline">
+              <span style="font-size:13px;font-weight:700">{{ selTitle }}</span>
+              <span style="margin-left:auto;font-size:11.5px;font-weight:600;color:#5a5cd6;background:#eef1ff;border-radius:99px;padding:5px 11px">{{ selCycleDay }}</span>
+            </div>
+            <sc-if value="{{ selHasData }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:2px;margin-top:12px">
+                <sc-for list="{{ selRows }}" as="r" hint-placeholder-count="6">
+                  <div sc-camel-on-click="{{ r.go }}" style="display:flex;align-items:center;padding:12px 14px;border-radius:12px;background:{{ r.bg }};cursor:pointer" style-hover="background:#eef1ff">
+                    <span style="font-size:12.5px;font-weight:500;color:#464b6b;width:96px;flex-shrink:0">{{ r.label }}</span>
+                    <span style="font-size:14px;font-weight:{{ r.weight }};color:{{ r.color }};min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.value }}</span>
+                    <span style="margin-left:auto;flex-shrink:0;padding-left:8px;font-size:11px;font-weight:700;color:#5a5cd6">{{ r.action }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ selEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:14px;padding:26px 14px;border-radius:14px;background:#f5f7fe;text-align:center">
+                <div style="font-size:13px;color:#464b6b">Ezen a napon nincs bejegyzés.</div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEsely }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="background:#ffffff;border-radius:20px;padding:22px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)">
+            <div style="font-size:12.5px;font-weight:600;color:#545a7a">Időzítés ebben a ciklusban</div>
+            <div style="font-size:36px;font-weight:700;margin-top:6px;letter-spacing:-.03em;color:#4a4cbd">Közepes</div>
+            <div style="font-size:13.5px;color:#464b6b;line-height:1.6;margin-top:9px;text-wrap:pretty">Három együttlét esik a termékeny ablakba, két külön napon — a becsült ovuláció előtt 3 és 1 nappal. A minősítés az időzítésről szól, nem a fogamzás valószínűségéről — azt ez az app nem számolja.</div>
+          </div>
+
+          <div style="background:#ffffff;border-radius:20px;padding:20px 18px 16px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)" data-comment-anchor="3538c91cda-div">
+            <div style="font-size:13px;font-weight:700">Termékeny ablak napjai</div>
+            <div style="display:flex;gap:6px;margin-top:16px">
+              <sc-for list="{{ fertileDays }}" as="d" hint-placeholder-count="10">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <div style="width:100%;aspect-ratio:1;border-radius:12px;background:{{ d.bg }};box-shadow:{{ d.ring }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+                    <span style="font-size:13px;font-weight:700;color:{{ d.fg }}">{{ d.num }}</span>
+                    <sc-if value="{{ d.hasCount }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:9px;font-weight:700;color:{{ d.fg }}">{{ d.count }}×</span>
+                    </sc-if>
+                  </div>
+                  <span style="font-size:8.5px;font-weight:600;color:#8f96b5">{{ d.short }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+              <div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:3px;background:#5a5cd6"></div><span style="font-size:11px;font-weight:500;color:#464b6b">Volt együttlét</span></div>
+              <div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:3px;background:#e3e8fb"></div><span style="font-size:11px;font-weight:500;color:#464b6b">Nincs bejegyzés</span></div>
+              <div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:3px;background:#f5f7fe"></div><span style="font-size:11px;font-weight:500;color:#464b6b">Még hátra van</span></div>
+            </div>
+          </div>
+
+          <div class="cols2">
+            <div style="background:#5a5cd6;border-radius:20px;padding:20px 18px;box-shadow:0 6px 22px rgba(90,92,214,.22)" data-comment-anchor="d96c9f2099-div">
+              <div style="font-size:13px;font-weight:700;color:#ffffff">A hátralévő ablak</div>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-top:10px">
+                <span style="font-size:34px;font-weight:700;color:#ffffff;letter-spacing:-.03em">4</span>
+                <span style="font-size:14px;font-weight:600;color:#d2daff">nap van hátra</span>
+              </div>
+              <div style="display:flex;gap:4px;margin-top:14px">
+                <sc-for list="{{ remainingDots }}" as="d" hint-placeholder-count="5">
+                  <div style="flex:1;height:8px;border-radius:99px;background:{{ d.bg }}"></div>
+                </sc-for>
+              </div>
+              <div style="margin-top:14px;background:rgba(255,255,255,.14);border-radius:14px;padding:13px 14px;font-size:12.5px;color:#eceeff;line-height:1.55">Az LH-csúcs utáni két nap a legszűkebb sáv; ha ma vagy holnap van együttlét, a minősítés <span style="font-weight:700;color:#ffffff">Jó</span> lesz.</div>
+            </div>
+            <div style="background:#ffffff;border-radius:20px;padding:20px 18px;box-shadow:0 1px 2px rgba(33,36,61,.05),0 6px 20px rgba(33,36,61,.04)" data-comment-anchor="67fa69a4be-div">
+              <div style="display:flex;align-items:baseline">
+                <span style="font-size:13px;font-weight:700">Korábbi ciklusok</span>
+                <span style="margin-left:auto;font-size:11px;font-weight:600;color:#4a4cbd;background:#eef1ff;border-radius:99px;padding:5px 10px">{{ histBarSummary }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+                <sc-for list="{{ histBarRows }}" as="h" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <span style="width:34px;flex-shrink:0;font-size:11.5px;font-weight:600;color:#545a7a">{{ h.label }}</span>
+                    <div style="flex:1;height:8px;border-radius:99px;background:#eef1ff;overflow:hidden">
+                      <div style="height:100%;width:{{ h.w }};background:{{ h.bg }};border-radius:99px"></div>
+                    </div>
+                    <span style="width:52px;flex-shrink:0;text-align:right;font-size:11px;font-weight:700;color:{{ h.bg }}">{{ h.timing }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#eef1ff;border-radius:20px;padding:20px 18px">
+            <div style="font-size:13px;font-weight:700;color:#5a5cd6">Módszertan</div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+              <sc-for list="{{ methodNotes }}" as="m" hint-placeholder-count="4">
+                <div style="display:flex;gap:10px;align-items:flex-start">
+                  <div style="width:6px;height:6px;border-radius:99px;background:#5a5cd6;margin-top:7px;flex-shrink:0"></div>
+                  <div style="font-size:12.5px;color:#2b2e63;line-height:1.55;text-wrap:pretty">{{ m }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div class="tabbar" style="background:#ffffff;flex-shrink:0;position:sticky;bottom:0;z-index:5;box-shadow:0 -1px 0 rgba(33,36,61,.06);padding:8px 8px 16px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <div sc-camel-on-click="{{ t.go }}" style="flex:1;padding:9px 0 7px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:{{ t.bg }}">
+          <svg sc-camel-view-box="0 0 24 24" width="23" height="23" fill="none" stroke="{{ t.color }}" stroke-width="{{ t.stroke }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="{{ t.icon }}"></path>
+            <path d="{{ t.icon2 }}"></path>
+          </svg>
+          <div style="font-size:11px;font-weight:{{ t.weight }};color:{{ t.color }}">{{ t.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div class="toastwrap">
+      <div style="width:100%;min-height:56px;background:#5a5cd6;border-radius:16px;color:#ffffff;overflow:hidden;box-shadow:0 10px 34px rgba(90,92,214,.38)">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px">
+          <div style="width:26px;height:26px;border-radius:99px;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">✓</div>
+          <span style="font-size:13.5px;font-weight:600">Mentve</span>
+          <span sc-camel-on-click="{{ undo }}" style="margin-left:auto;font-size:13px;font-weight:700;color:#ffffff;background:rgba(255,255,255,.18);border-radius:99px;padding:7px 13px;cursor:pointer" style-hover="background:rgba(255,255,255,.28)">Visszavonás</span>
+        </div>
+        <div style="height:3px;background:rgba(255,255,255,.25)">
+          <div class="toastbar" style="height:100%;background:#ffffff;width:100%"></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ sheet }}" hint-placeholder-val="{{ false }}">
+    <div class="sheet" style="z-index:50">
+      <div sc-camel-on-click="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(33,36,61,.4)"></div>
+      <div class="sheetbox" style="background:#ffffff;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(33,36,61,.18)">
+
+        <div style="padding:14px 20px 14px;flex-shrink:0">
+          <div style="width:38px;height:4px;border-radius:99px;background:#d8dcec;margin:0 auto 14px"></div>
+          <div style="display:flex;align-items:center">
+            <span style="font-size:13px;font-weight:700">{{ sheetTitle }}</span>
+            <span style="margin-left:auto;font-size:11.5px;font-weight:600;color:#545a7a">{{ sheetCount }}</span>
+            <div sc-camel-on-click="{{ closeSheet }}" style="margin-left:12px;width:28px;height:28px;border-radius:99px;background:#f6f7ff;display:grid;place-items:center;font-size:13px;color:#464b6b;cursor:pointer" style-hover="background:#eaeefb">✕</div>
+          </div>
+          <sc-if value="{{ notSingle }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:5px;margin-top:12px">
+            <sc-for list="{{ stepDots }}" as="s" hint-placeholder-count="7">
+              <div sc-camel-on-click="{{ s.go }}" style="flex:1;height:5px;border-radius:99px;background:{{ s.bg }};cursor:pointer"></div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+
+        <div class="noscroll" style="flex:1;overflow-y:auto;padding:8px 20px 16px">
+
+          <sc-if value="{{ step0 }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Testhő</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Nem kötelező. Tegnap: 36,36 °C</div>
+              <div style="display:flex;gap:8px;margin-top:20px;justify-content:center;align-items:center">
+                <div ref="{{ wRef }}" class="noscroll" style="height:172px;overflow-y:auto;scroll-snap-type:y mandatory;width:80px;background:#f6f7ff;border-radius:18px">
+                  <div style="height:57px"></div>
+                  <sc-for list="{{ whole }}" as="v" hint-placeholder-count="4">
+                    <div sc-camel-on-click="{{ v.pick }}" style="height:58px;scroll-snap-align:center;display:grid;place-items:center;font-size:{{ v.size }};font-weight:{{ v.weight }};color:{{ v.color }};cursor:pointer">{{ v.label }}</div>
+                  </sc-for>
+                  <div style="height:57px"></div>
+                </div>
+                <div style="font-size:26px;font-weight:700;color:#626884">,</div>
+                <div ref="{{ tRef }}" class="noscroll" style="height:172px;overflow-y:auto;scroll-snap-type:y mandatory;width:62px;background:#f6f7ff;border-radius:18px">
+                  <div style="height:57px"></div>
+                  <sc-for list="{{ tenths }}" as="v" hint-placeholder-count="10">
+                    <div sc-camel-on-click="{{ v.pick }}" style="height:58px;scroll-snap-align:center;display:grid;place-items:center;font-size:{{ v.size }};font-weight:{{ v.weight }};color:{{ v.color }};cursor:pointer">{{ v.label }}</div>
+                  </sc-for>
+                  <div style="height:57px"></div>
+                </div>
+                <div ref="{{ hRef }}" class="noscroll" style="height:172px;overflow-y:auto;scroll-snap-type:y mandatory;width:62px;background:#f6f7ff;border-radius:18px">
+                  <div style="height:57px"></div>
+                  <sc-for list="{{ hundredths }}" as="v" hint-placeholder-count="10">
+                    <div sc-camel-on-click="{{ v.pick }}" style="height:58px;scroll-snap-align:center;display:grid;place-items:center;font-size:{{ v.size }};font-weight:{{ v.weight }};color:{{ v.color }};cursor:pointer">{{ v.label }}</div>
+                  </sc-for>
+                  <div style="height:57px"></div>
+                </div>
+                <div style="font-size:15px;font-weight:600;color:#545a7a">°C</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step1 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Cervikális nyák</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Szárazból nyúlósba — a nyúlós a legtermékenyebb.</div>
+              <div style="display:flex;gap:8px;margin-top:22px">
+                <sc-for list="{{ mucusScale }}" as="m" hint-placeholder-count="4">
+                  <div sc-camel-on-click="{{ m.pick }}" style="flex:1;cursor:pointer;display:flex;flex-direction:column;gap:9px">
+                    <div style="height:70px;border-radius:14px;background:{{ m.bg }};box-shadow:{{ m.ring }}"></div>
+                    <div style="font-size:11px;font-weight:600;text-align:center;color:{{ m.fg }}">{{ m.label }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">LH-teszt</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Tegnap: pozitív</div>
+              <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
+                <sc-for list="{{ lhOpts }}" as="o" hint-placeholder-count="3">
+                  <div sc-camel-on-click="{{ o.pick }}" style="padding:19px 18px;border-radius:16px;background:{{ o.bg }};box-shadow:{{ o.ring }};cursor:pointer;display:flex;align-items:center">
+                    <span style="font-size:15px;font-weight:700;color:{{ o.fg }}">{{ o.label }}</span>
+                    <span style="margin-left:auto;font-size:11.5px;font-weight:500;color:#545a7a">{{ o.note }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step3 }}" hint-placeholder-val="{{ false }}">
+            <div data-comment-anchor="f488c0695d-div">
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Görcs</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Előbb a hely, aztán az erőssége.</div>
+              <div style="display:flex;gap:9px;margin-top:20px">
+                <sc-for list="{{ crampTypes }}" as="c" hint-placeholder-count="3">
+                  <div sc-camel-on-click="{{ c.pick }}" style="flex:1;padding:17px 0;text-align:center;border-radius:14px;background:{{ c.bg }};box-shadow:{{ c.ring }};cursor:{{ c.cursor }};opacity:{{ c.opacity }};font-size:14px;font-weight:600;color:{{ c.fg }}">{{ c.label }}</div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ crampNoneSelected }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:11.5px;color:#8f96b5;margin-top:9px">Nincs görcs esetén nincs mit kiválasztani.</div>
+              </sc-if>
+              <div style="font-size:12px;font-weight:600;color:#545a7a;margin-top:24px">Intenzitás</div>
+              <div style="display:flex;gap:8px;margin-top:11px;align-items:flex-end">
+                <sc-for list="{{ crampScale }}" as="s" hint-placeholder-count="4">
+                  <div sc-camel-on-click="{{ s.pick }}" style="flex:1;cursor:pointer;display:flex;flex-direction:column;gap:9px">
+                    <div style="height:{{ s.h }};border-radius:12px;background:{{ s.bg }};box-shadow:{{ s.ring }}"></div>
+                    <div style="font-size:11px;font-weight:600;text-align:center;color:{{ s.fg }}">{{ s.label }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step4 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Folyás</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Az utolsó vérzés 9 napja ért véget.</div>
+              <div style="display:flex;gap:7px;margin-top:22px;align-items:flex-end">
+                <sc-for list="{{ flowScale }}" as="f" hint-placeholder-count="5">
+                  <div sc-camel-on-click="{{ f.pick }}" style="flex:1;cursor:pointer;display:flex;flex-direction:column;gap:9px">
+                    <div style="height:{{ f.h }};border-radius:12px;background:{{ f.bg }};box-shadow:{{ f.ring }}"></div>
+                    <div style="font-size:10px;font-weight:600;text-align:center;color:{{ f.fg }}">{{ f.label }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div sc-camel-on-click="{{ togglePeriodStart }}" style="margin-top:18px;display:flex;align-items:center;gap:13px;padding:16px;border-radius:14px;background:{{ psBg }};box-shadow:{{ psRing }};cursor:pointer">
+                <div style="width:22px;height:22px;border-radius:7px;background:{{ psBoxBg }};box-shadow:{{ psBoxRing }};display:grid;place-items:center;font-size:12px;font-weight:700;color:#ffffff;flex-shrink:0">{{ psMark }}</div>
+                <div>
+                  <div style="font-size:13.5px;font-weight:600;color:{{ psFg }}">Ma kezdődött a menstruáció</div>
+                  <div style="font-size:11.5px;color:#545a7a;margin-top:2px">Ez lesz az új ciklus 1. napja.</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step5 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Együttlét</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Ez az egyetlen adat, ami a fogamzási esélybe számít. Egy napon több is lehet.</div>
+              <div style="display:flex;align-items:center;gap:14px;margin-top:22px;padding:20px;border-radius:18px;background:{{ sexBg }};box-shadow:{{ sexRing }}">
+                <div>
+                  <div style="font-size:17px;font-weight:700;color:{{ sexFg }}">{{ sexLabel }}</div>
+                  <div style="font-size:12px;color:#464b6b;margin-top:3px">{{ sexNote }}</div>
+                </div>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+                  <button sc-camel-on-click="{{ sexMinus }}" aria-label="Kevesebb" style="width:44px;height:44px;border-radius:99px;border:0;background:#ffffff;color:{{ sexMinusFg }};font:700 20px 'Montserrat';cursor:pointer;box-shadow:0 1px 3px rgba(33,36,61,.14)">−</button>
+                  <span style="min-width:26px;text-align:center;font-size:24px;font-weight:700;color:{{ sexFg }}">{{ sexCount }}</span>
+                  <button sc-camel-on-click="{{ sexPlus }}" aria-label="Több" style="width:44px;height:44px;border-radius:99px;border:0;background:#5a5cd6;color:#ffffff;font:700 20px 'Montserrat';cursor:pointer;box-shadow:0 2px 6px rgba(90,92,214,.32)">+</button>
+                </div>
+              </div>
+              <sc-if value="{{ hasSexEvents }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+                  <sc-for list="{{ sexEvents }}" as="ev" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;padding:14px 16px;border-radius:14px;background:#f5f7fe">
+                      <span style="font-size:13px;font-weight:600;color:#21243d">{{ ev.label }}</span>
+                      <span style="margin-left:auto;font-size:12px;font-weight:500;color:#464b6b;margin-right:10px">Védekezéssel volt</span>
+                      <div sc-camel-on-click="{{ ev.toggle }}" style="width:46px;height:27px;border-radius:99px;background:{{ ev.trackBg }};position:relative;cursor:pointer;flex-shrink:0">
+                        <div style="position:absolute;top:2.5px;left:{{ ev.knobLeft }};width:22px;height:22px;border-radius:99px;background:#ffffff;box-shadow:0 1px 3px rgba(33,36,61,.25);transition:left .15s"></div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <div style="font-size:12px;color:#545a7a;margin-top:12px;line-height:1.5">A 0 azt jelenti, hogy ma nem volt együttlét — ez is rögzített adat, nem hiányzó.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step6 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Hangulat</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Ez is jelezheti az ovulációt — több is kiválasztható.</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px">
+                <sc-for list="{{ moodChips }}" as="m" hint-placeholder-count="7">
+                  <div sc-camel-on-click="{{ m.toggle }}" style="padding:12px 16px;border-radius:99px;background:{{ m.bg }};box-shadow:{{ m.ring }};cursor:pointer;font-size:13.5px;font-weight:600;color:{{ m.fg }};flex-shrink:0;white-space:nowrap">{{ m.label }}</div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ step7 }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="font-size:21px;font-weight:700;letter-spacing:-.02em">Összegzés</div>
+              <div style="font-size:13px;color:#464b6b;margin-top:6px">Bármelyik sorra koppintva javíthatod.</div>
+              <div style="display:flex;flex-direction:column;gap:3px;margin-top:16px">
+                <sc-for list="{{ summaryRows }}" as="r" hint-placeholder-count="6">
+                  <div sc-camel-on-click="{{ r.go }}" style="display:flex;align-items:center;padding:14px;border-radius:13px;background:{{ r.bg }};cursor:pointer">
+                    <span style="font-size:12px;font-weight:500;color:#545a7a;width:92px;flex-shrink:0">{{ r.label }}</span>
+                    <span style="font-size:14px;font-weight:{{ r.weight }};color:{{ r.color }}">{{ r.value }}</span>
+                    <span style="margin-left:auto;font-size:11.5px;font-weight:600;color:#5a5cd6">{{ r.action }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="padding:14px 20px 22px;display:flex;gap:10px;flex-shrink:0;background:#ffffff">
+          <sc-if value="{{ isSingle }}" hint-placeholder-val="{{ false }}">
+            <button sc-camel-on-click="{{ closeSheet }}" style="flex:1;background:#f6f7ff;border:0;border-radius:99px;color:#464b6b;font:600 13.5px 'Montserrat';padding:17px 0;cursor:pointer" style-hover="background:#eef1ff">Mégse</button>
+          </sc-if>
+          <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+            <button sc-camel-on-click="{{ back }}" aria-label="Vissza" style="width:56px;flex-shrink:0;background:#f6f7ff;border:0;border-radius:99px;color:#464b6b;font:700 16px 'Montserrat';padding:17px 0;cursor:pointer" style-hover="background:#eef1ff">←</button>
+          </sc-if>
+          <sc-if value="{{ showSkip }}" hint-placeholder-val="{{ true }}">
+            <button sc-camel-on-click="{{ skip }}" style="flex:1;background:#f6f7ff;border:0;border-radius:99px;color:#464b6b;font:600 13.5px 'Montserrat';padding:17px 0;cursor:pointer" style-hover="background:#eef1ff">Kihagyom</button>
+          </sc-if>
+          <button sc-camel-on-click="{{ next }}" style="flex:2;background:#5a5cd6;border:0;border-radius:99px;color:#ffffff;font:700 13.5px 'Montserrat';padding:17px 0;cursor:pointer" style-hover="background:#4a4cbd">{{ nextLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;startEmpty&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototípus-állapot&quot;},&quot;startLogged&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototípus-állapot&quot;},&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;ma&quot;,&quot;options&quot;:[&quot;ma&quot;,&quot;ciklus&quot;,&quot;trendek&quot;,&quot;naptar&quot;,&quot;esely&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototípus-állapot&quot;},&quot;showOverlay&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototípus-állapot&quot;}}">
+const TEAL = '#5a5cd6', TEAL_T = '#5a5cd6', TINT = '#eef1ff';
+const PLUM = '#6f71d6', PLUM_T = '#3a3c9e', PLUM_TINT = '#e6e7fb';
+const AMB = '#b1b2ff', AMB_T = '#4a4cbd', AMB_TINT = '#eef1ff';
+const T = '#21243d', T2 = '#464b6b', T3 = '#545a7a', T4 = '#626884';
+const MUCUS_RAMP = ['#f2f6ff', '#dfe9ff', '#c6d6ff', '#aac4ff'];
+const CRAMP_RAMP = ['#f3f3ff', '#e4e4ff', '#cfd0ff', '#b1b2ff'];
+const FLOW_RAMP = ['#eeeefb', '#dcddf6', '#c5c6f0', '#adaee9', '#9698e2'];
+const INK_AMB = '#1e3566', INK_TEAL = '#2c2d63', INK_PLUM = '#26265c';
+const GREEN = '#5a5cd6', GREEN_TINT = '#eef1ff';
+
+const BBT = [36.38, 36.42, 36.35, null, 36.40, 36.36, 36.44, null, 36.39, 36.37, 36.85, 36.41, 36.36, null];
+const PREV = [36.40,36.36,36.34,36.38,36.35,36.33,36.37,36.36,36.32,36.35,36.38,36.34,36.36,36.39,36.52,36.58,36.61,36.57,36.63,36.60,36.62,36.58,36.64,36.61,36.59,36.55,36.42];
+const MUCUS = { 6:0, 7:0, 8:1, 9:1, 10:2, 11:2, 12:3, 13:3 };
+const LH = { 11:0, 12:0, 13:1 };
+const CRAMP = { 1:{t:'Alhas',i:2}, 2:{t:'Alhas',i:2}, 3:{t:'Derék',i:1}, 12:{t:'Alhas',i:1} };
+const FLOW = { 1:4, 2:3, 3:2, 4:1, 5:1 };
+const SEX = { 8: 1, 11: 2, 13: 1 };
+const MUCUS_L = ['Száraz', 'Ragadós', 'Nedves', 'Nyúlós'];
+const LH_L = ['Negatív', 'Pozitív', 'Csúcs'];
+const FLOW_L = ['Nincs', 'Pecsételő', 'Enyhe', 'Közepes', 'Erős'];
+const CRAMP_L = ['Nincs', 'Enyhe', 'Közepes', 'Erős'];
+const CRAMP_T = ['Alhas', 'Derék', 'Mell'];
+const HIST = [
+  { label: 'febr. 23.', len: 26, lut: 13, timing: 'Közepes' },
+  { label: 'márc. 21.', len: 31, lut: 14, timing: 'Gyenge' },
+  { label: 'ápr. 21.', len: 27, lut: 12, timing: 'Jó' },
+  { label: 'máj. 18.', len: 28, lut: 13, timing: 'Közepes' },
+  { label: 'jún. 15.', len: 29, lut: 14, timing: 'Gyenge' },
+  { label: 'júl. 14.', len: 27, lut: 13, timing: 'Jó' }
+];
+const DAY = 14, TOTAL = 30, OVU_A = 14, OVU_B = 18, FERT_A = 9, FERT_B = 18, MENS = 5;
+const COVER = 36.44;
+const CYCLE_LEN = 28;
+const MAPANEL_PHASE = (() => {
+  let label, start, end;
+  if (DAY <= MENS) { label = 'Menstruáció'; start = 1; end = MENS; }
+  else if (DAY < FERT_A) { label = 'Folliculáris szakasz'; start = MENS + 1; end = FERT_A - 1; }
+  else if (DAY < OVU_A) { label = 'Termékeny ablak'; start = FERT_A; end = OVU_A - 1; }
+  else if (DAY <= OVU_B) { label = 'Ovulációs ablak'; start = OVU_A; end = OVU_B; }
+  else { label = 'Luteális fázis'; start = OVU_B + 1; end = CYCLE_LEN; }
+  const total = end - start + 1;
+  const elapsed = Math.max(0, Math.min(total, DAY - start + 1));
+  return { label, total, elapsed, remaining: total - elapsed };
+})();
+const STEPS = ['Testhő', 'Nyák', 'LH-teszt', 'Görcs', 'Folyás', 'Együttlét', 'Hangulat', 'Összegzés'];
+const MOOD_L = ['Vidám', 'Nyugodt', 'Ingerlékeny', 'Fáradt', 'Szomorú', 'Szorongó', 'Vágyakozó'];
+const MOOD_E = { Vidám: '😊', Nyugodt: '😌', Ingerlékeny: '😠', Fáradt: '😴', Szomorú: '😢', Szorongó: '😟', Vágyakozó: '😍' };
+const MOOD = { 6: ['Fáradt'], 8: ['Nyugodt'], 9: ['Vidám'], 11: ['Vágyakozó', 'Vidám'], 12: ['Ingerlékeny'], 13: ['Vágyakozó'] };
+const VIEWS = { ma: 'Mensi', trendek: 'Trendek', naptar: 'Bejegyzések', esely: 'Fogamzási esély' };
+const tColor = t => t === 'Jó' ? '#2f3170' : t === 'Közepes' ? '#4a4cbd' : '#626884';
+const tBg = t => t === 'Jó' ? '#d2daff' : t === 'Közepes' ? '#eef1ff' : '#eef0f7';
+const tSolid = t => t === 'Jó' ? '#2f3170' : t === 'Közepes' ? '#5a5cd6' : '#a8adc7';
+const tW = t => t === 'Jó' ? '100%' : t === 'Közepes' ? '62%' : '30%';
+const dateOf = d => 'aug. ' + (9 + d) + '.';
+const lenPos = n => (((n - 24) / 9) * 100) + '%';
+const ICONS = {
+  ma: ['M12 3.2a8.8 8.8 0 1 1 0 17.6 8.8 8.8 0 0 1 0-17.6Z', 'M12 7.4V12l3.2 1.9'],
+  trendek: ['M4 19V6M9 19v-6M14 19V9M19 19v-9', 'M4 19h16'],
+  naptar: ['M6 3.8h9.5L19 7.3V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.8a1 1 0 0 1 1-1Z', 'M8.5 12h7M8.5 15.5h7M8.5 8.5h3.5'],
+  esely: ['M12 20s-6.5-4.3-6.5-9A3.9 3.9 0 0 1 12 8.4 3.9 3.9 0 0 1 18.5 11c0 4.7-6.5 9-6.5 9Z', 'M12 8.4V20']
+};
+
+const ring = (on, c) => on ? 'inset 0 0 0 3px ' + c + ', 0 0 0 4px rgba(90,92,214,.16), 0 4px 12px rgba(90,92,214,.2)' : 'none';
+
+class Component extends DCLogic {
+  state = {
+    view: 'ma', sheet: false, step: 0, single: false, wide: false, toast: false,
+    empty: false, logged: false, overlay: false, sel: 22,
+    w: 36, t: 4, h: 8, tempSet: false,
+    mucus: null, lh: null, crampT: null, crampI: null, flow: null, sexEvents: [], sexSet: false, periodStart: false, moods: [],
+    skipped: {}
+  };
+
+  componentDidMount() {
+    this.onResize = () => this.setState({ wide: window.innerWidth >= 1000 });
+    this.onResize();
+    window.addEventListener('resize', this.onResize);
+    const p = this.props;
+    this.setState({
+      empty: !!p.startEmpty, logged: !!p.startLogged,
+      overlay: !!p.showOverlay, view: p.startView || 'ma'
+    });
+  }
+  componentDidUpdate(prev) {
+    const p = this.props;
+    if (prev.startEmpty !== p.startEmpty) this.setState({ empty: !!p.startEmpty });
+    if (prev.startLogged !== p.startLogged) this.setState({ logged: !!p.startLogged });
+    if (prev.showOverlay !== p.showOverlay) this.setState({ overlay: !!p.showOverlay });
+    if (prev.startView !== p.startView && p.startView) this.setState({ view: p.startView });
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+
+  wheelRef(key, base) {
+    return el => {
+      if (!el) return;
+      const put = () => { el.scrollTop = (this.state[key] - base) * 58; };
+      put();
+      requestAnimationFrame(put);
+    };
+  }
+
+  go(v) { return () => this.setState({ view: v }); }
+  temp() { return this.state.w + ',' + this.state.t + this.state.h; }
+
+  wheel(list, key) {
+    const cur = this.state[key];
+    return list.map(n => ({
+      label: String(n),
+      size: n === cur ? '30px' : '20px',
+      weight: n === cur ? '700' : '500',
+      color: n === cur ? T : T4,
+      pick: () => this.setState({ [key]: n, tempSet: true, skipped: { ...this.state.skipped, 0: false } })
+    }));
+  }
+
+  set(key, val, stepIdx) {
+    return () => {
+      const s = { ...this.state.skipped }; s[stepIdx] = false;
+      this.setState({ [key]: val, skipped: s });
+    };
+  }
+
+  logValues() {
+    const st = this.state, sk = st.skipped;
+    const cramp = st.crampT ? st.crampT + ' · ' + CRAMP_L[st.crampI == null ? 1 : st.crampI] : null;
+    return [
+      { label: 'Testhő', value: st.tempSet ? this.temp() + ' °C' : null, i: 0 },
+      { label: 'Nyák', value: st.mucus == null ? null : MUCUS_L[st.mucus], i: 1 },
+      { label: 'LH-teszt', value: st.lh == null ? null : LH_L[st.lh], i: 2 },
+      { label: 'Görcs', value: cramp, i: 3 },
+      { label: 'Folyás', value: st.flow == null ? (st.periodStart ? 'Ciklus 1. napja' : null) : FLOW_L[st.flow] + (st.periodStart ? ' · ciklus 1. napja' : ''), i: 4 },
+      { label: 'Együttlét', value: st.sexSet ? (st.sexEvents.length === 0 ? 'Nem volt' : st.sexEvents.length + '×' + (st.sexEvents.some(e => e.protected) ? ' · ' + st.sexEvents.filter(e => e.protected).length + ' védekezéssel' : '')) : null, i: 5 },
+      { label: 'Hangulat', value: st.moods.length ? st.moods.map(m => MOOD_E[m] + ' ' + m).join(', ') : null, i: 6 }
+    ];
+  }
+
+  chart(data, x1, lo, hi) {
+    const pts = [];
+    data.forEach((v, i) => {
+      if (v == null) return;
+      pts.push({ i, x: (i / x1) * 100, y: ((hi - v) / (hi - lo)) * 100, v });
+    });
+    return pts;
+  }
+
+  renderVals() {
+    const st = this.state;
+    const mainView = st.view;
+    const navItems = [['ma', 'Ma'], ['trendek', 'Trendek'], ['naptar', 'Bejegyzések'], ['esely', 'Esély']];
+
+    const phaseSegs = [];
+    for (let d = 1; d <= TOTAL; d++) {
+      let bg = '#d8dcec', h = '14px';
+      if (d <= MENS) { bg = PLUM; h = '24px'; }
+      else if (d >= OVU_A && d <= OVU_B) { bg = AMB; h = '32px'; }
+      else if (d >= FERT_A && d < OVU_A) { bg = '#c6d6ff'; h = '22px'; }
+      else if (d > OVU_B) { bg = '#e0e3ef'; h = '18px'; }
+      if (d > 25) { bg = '#b9bbe8'; h = '20px'; }
+      phaseSegs.push({
+        bg, h, isToday: d === DAY, op: d > DAY ? '.55' : '1',
+        num: d % 5 === 0 || d === 1 ? String(d) : '',
+        numColor: d === DAY ? TEAL : T4
+      });
+    }
+
+    const gridDays = [];
+    for (let d = 1; d <= DAY; d++) gridDays.push({ n: d, color: d === DAY ? TEAL : T4 });
+    const off = { bg: '#f6f7ff', txt: '', fg: T4 };
+    const on = (bg, txt, fg) => ({ bg, txt: txt || '', fg: fg || '#ffffff' });
+    const rows = [
+      { label: 'Testhő', f: d => BBT[d - 1] != null ? on('#dde1ef', '', T2) : off },
+      { label: 'Nyák', f: d => MUCUS[d] != null ? on(MUCUS_RAMP[MUCUS[d]], String(MUCUS[d] + 1), INK_AMB) : off },
+      { label: 'LH', f: d => LH[d] != null ? on(LH[d] === 0 ? '#dde1ef' : '#5a5cd6', LH[d] === 0 ? '–' : '+', LH[d] === 0 ? T2 : '#ffffff') : off },
+      { label: 'Görcs', f: d => CRAMP[d] ? on(CRAMP_RAMP[CRAMP[d].i], String(CRAMP[d].i), INK_TEAL) : off },
+      { label: 'Folyás', f: d => FLOW[d] ? on(FLOW_RAMP[FLOW[d]], String(FLOW[d]), INK_PLUM) : off },
+      { label: 'Együttlét', f: d => SEX[d] ? on(TEAL, String(SEX[d]), '#ffffff') : off },
+      { label: 'Hangulat', f: d => MOOD[d] ? on('rgba(90,92,214,.16)', MOOD_E[MOOD[d][0]], '#3a3c9e') : off }
+    ];
+    const gridRows = rows.map(r => {
+      const cells = [];
+      for (let d = 1; d <= DAY; d++) cells.push(r.f(d));
+      return { label: r.label, cells };
+    });
+
+    const LO = 36.25, HI = 36.95;
+    const pts = this.chart(BBT, TOTAL - 1, LO, HI);
+    const bbtDots = pts.map(p => ({
+      x: p.x + '%', y: p.y + '%',
+      bg: '#5a5cd6',
+      ring: p.v > 36.7 ? '0 0 0 4px rgba(170,196,255,.22)' : '0 1px 2px rgba(33,36,61,.2)'
+    }));
+    const seq = [];
+    let run = [];
+    BBT.forEach((v, i) => { if (v == null) { if (run.length) seq.push(run); run = []; } else run.push(i); });
+    if (run.length) seq.push(run);
+    const xy = i => ((i / (TOTAL - 1)) * 100).toFixed(2) + ',' + (((HI - BBT[i]) / (HI - LO)) * 100).toFixed(2);
+    const bbtSegs = seq.filter(g => g.length > 1).map(g => ({ pts: g.map(xy).join(' ') }));
+    const bbtGaps = [];
+    for (let k = 0; k < seq.length - 1; k++) bbtGaps.push({ pts: xy(seq[k][seq[k].length - 1]) + ' ' + xy(seq[k + 1][0]) });
+    const prevPoly = PREV.map((v, i) => ((i / (TOTAL - 1)) * 100).toFixed(2) + ',' + (((HI - v) / (HI - LO)) * 100).toFixed(2)).join(' ');
+    const yTicks = [36.9, 36.7, 36.5, 36.3].map(v => ({ label: String(v).replace('.', ','), top: (((HI - v) / (HI - LO)) * 100) + '%' }));
+    const xTicks = [];
+    for (let d = 1; d <= TOTAL; d++) xTicks.push(d % 5 === 0 || d === 1 ? String(d) : '');
+
+    const band = (map, rgb, max) => {
+      const cells = [];
+      for (let d = 1; d <= TOTAL; d++) {
+        const v = map[d];
+        cells.push({ bg: v == null ? '#f6f7ff' : 'rgba(' + rgb + ',' + (0.3 + (v / max) * 0.6) + ')' });
+      }
+      return cells;
+    };
+
+    const MONTH_DEFS = [
+      { y: 2026, m: 5, full: '2026. június', short: 'Június' },
+      { y: 2026, m: 6, full: '2026. július', short: 'Július' },
+      { y: 2026, m: 7, full: '2026. augusztus', short: 'Augusztus', anchor: true, todayDate: 23 },
+      { y: 2026, m: 8, full: '2026. szeptember', short: 'Szeptember' },
+      { y: 2026, m: 9, full: '2026. október', short: 'Október' }
+    ];
+    const calIdx = st.calMonthIdx == null ? 2 : st.calMonthIdx;
+    const md = MONTH_DEFS[calIdx];
+    const selMd = MONTH_DEFS[st.selMonthIdx == null ? 2 : st.selMonthIdx];
+    const daysInMonth = new Date(md.y, md.m + 1, 0).getDate();
+    const firstDow = (new Date(md.y, md.m, 1).getDay() + 6) % 7;
+
+    const calCells = [];
+    for (let b = 0; b < firstDow; b++) calCells.push({ n: '', bg: 'transparent', ring: 'none', fg: 'transparent', weight: '400', dots: [], cursor: 'default', pick: () => {} });
+    for (let date = 1; date <= daysInMonth; date++) {
+      const cd = date - 9;
+      const inCycle = md.anchor && cd >= 1 && cd <= TOTAL;
+      let bg = '#f7f8fd', fg = T3;
+      if (inCycle) {
+        if (cd <= MENS) { bg = '#8386e6'; fg = '#20214d'; }
+        else if (cd >= OVU_A && cd <= OVU_B) { bg = '#b1b2ff'; fg = '#2c2d63'; }
+        else if (cd >= FERT_A && cd < OVU_A) { bg = '#cfdcff'; fg = '#26365f'; }
+        else if (cd > OVU_B) { bg = '#eaecf4'; fg = T2; }
+        else { bg = '#f5f7fe'; fg = T2; }
+      }
+      const dots = [];
+      if (inCycle && cd <= DAY) {
+        if (BBT[cd - 1] != null) dots.push('#7c82a6');
+        if (SEX[cd]) dots.push(TEAL);
+      }
+      const isSel = date === st.sel && calIdx === (st.selMonthIdx == null ? 2 : st.selMonthIdx);
+      const isToday = md.anchor && date === md.todayDate;
+      calCells.push({
+        n: String(date),
+        bg: isSel ? TEAL : bg,
+        ring: isSel ? 'none' : (isToday ? 'inset 0 0 0 2px ' + TEAL : 'none'),
+        fg: isSel ? '#ffffff' : fg,
+        weight: isToday || isSel ? '700' : '500',
+        dots: isSel ? dots.map(() => '#ffffff') : dots,
+        cursor: 'pointer',
+        pick: () => this.setState({ sel: date, selMonthIdx: calIdx })
+      });
+    }
+    const selCd = selMd.anchor ? st.sel - 9 : -1;
+    const selInCycle = selCd >= 1 && selCd <= DAY;
+    const raw = selInCycle ? [
+      { label: 'Testhő', value: BBT[selCd - 1] != null ? String(BBT[selCd - 1]).replace('.', ',') + ' °C' : null, i: 0 },
+      { label: 'Nyák', value: MUCUS[selCd] != null ? MUCUS_L[MUCUS[selCd]] : null, i: 1 },
+      { label: 'LH-teszt', value: LH[selCd] != null ? LH_L[LH[selCd]] : null, i: 2 },
+      { label: 'Görcs', value: CRAMP[selCd] ? CRAMP[selCd].t + ' · ' + CRAMP_L[CRAMP[selCd].i] : null, i: 3 },
+      { label: 'Folyás', value: FLOW[selCd] ? FLOW_L[FLOW[selCd]] : null, i: 4 },
+      { label: 'Együttlét', value: SEX[selCd] ? (SEX[selCd] === 1 ? '1 alkalom' : SEX[selCd] + ' alkalom') : null, i: 5 },
+      { label: 'Hangulat', value: MOOD[selCd] ? MOOD[selCd].map(m => MOOD_E[m] + ' ' + m).join(', ') : null, i: 6 }
+    ] : [];
+    const selRows = raw.map(r => ({
+      label: r.label, value: r.value || 'nincs adat',
+      color: r.value ? T : T4, weight: r.value ? '600' : '500',
+      bg: r.value ? '#f5f7fe' : 'transparent',
+      action: r.value ? 'módosítás' : 'rögzítés',
+      go: () => this.setState({ sheet: true, step: r.i, single: true })
+    }));
+    const selHasData = selInCycle;
+    const monthOptions = MONTH_DEFS.map((m, i) => ({ value: i, label: m.full }));
+
+    const fertileDays = [];
+    for (let d = FERT_A; d <= FERT_B; d++) {
+      const cnt = SEX[d] || 0;
+      const future = d > DAY;
+      const bg = cnt ? TEAL : (future ? '#f5f7fe' : '#e3e8fb');
+      const fg = cnt ? '#ffffff' : (future ? '#b8bedb' : '#3f4f9c');
+      fertileDays.push({
+        num: d, short: dateOf(d).replace('aug. ', 'aug.'),
+        bg, fg, hasCount: cnt > 0, count: cnt,
+        ring: d === DAY ? 'inset 0 0 0 2px #21243d' : 'none'
+      });
+    }
+
+    const vals = this.logValues();
+    const parentValsForPanel = vals;
+    const summaryRows = vals.map(v => ({
+      label: v.label, value: v.value || 'Kihagyva',
+      color: v.value ? T : T4, weight: v.value ? '600' : '500',
+      bg: v.value ? '#f5f7fe' : '#fafbff',
+      action: v.value ? 'javítás' : 'kitöltés',
+      go: () => this.setState({ step: v.i })
+    }));
+
+    const MUCUS_TXT = { 6:'száraz', 7:'száraz', 8:'ragadós', 9:'ragadós', 10:'nedves', 11:'nedves', 12:'nyúlós', 13:'nyúlós' };
+    const LH_TXT = { 11:'LH−', 12:'LH−', 13:'LH+' };
+    const bbtRows = [];
+    for (let d = 1; d <= DAY; d++) {
+      const v = BBT[d - 1];
+      const marks = [MUCUS_TXT[d], LH_TXT[d]].filter(Boolean).join(' · ');
+      if (v == null) {
+        bbtRows.push({
+          day: d, date: dateOf(d), temp: 'nincs mérés', tempW: '500', tempFg: '#8f96b5',
+          delta: '—', deltaFg: '#a8adc7', marks: marks || '—', rowBg: 'transparent', dayFg: '#8f96b5'
+        });
+        continue;
+      }
+      const diff = v - COVER;
+      const out = v > 36.7;
+      bbtRows.push({
+        day: d, date: dateOf(d),
+        temp: v.toFixed(2).replace('.', ',') + ' °C',
+        tempW: out ? '700' : '600',
+        tempFg: out ? '#4a4cbd' : T,
+        delta: (diff >= 0 ? '+' : '−') + Math.abs(diff).toFixed(2).replace('.', ','),
+        deltaFg: diff >= 0 ? '#4a4cbd' : T4,
+        marks: out ? 'kiugró' : (marks || '—'),
+        rowBg: out ? '#eef1ff' : (d === DAY - 1 ? '#f5f7fe' : 'transparent'),
+        dayFg: T
+      });
+    }
+
+    return {
+      todayLabel: 'aug. 23., vasárnap',
+      headerTitle: VIEWS[mainView] || 'Mensi',
+      headerRight: mainView === 'ma' ? 'aug. 23., vasárnap' : 'ciklus 14. nap',
+      showBack: mainView === 'esely',
+      goBack: this.go('ma'),
+      isMa: mainView === 'ma', isTrendek: mainView === 'trendek',
+      isNaptar: mainView === 'naptar', isEsely: mainView === 'esely',
+      emptyToggleLabel: st.empty ? 'Demo adat mutatása' : 'Üres állapot mutatása',
+      toggleEmpty: () => this.setState({ empty: !st.empty, view: 'ma' }),
+      tabs: navItems.slice(0, 3).map(([k, l]) => ({
+        label: l, go: this.go(k),
+        icon: ICONS[k][0], icon2: ICONS[k][1],
+        stroke: st.view === k ? '2.2' : '1.7',
+        color: st.view === k ? TEAL : T3,
+        weight: st.view === k ? '700' : '500',
+        bg: st.view === k ? TINT : 'transparent'
+      })),
+      sideNav: navItems.map(([k, l]) => ({
+        label: l, go: this.go(k),
+        icon: ICONS[k][0], icon2: ICONS[k][1],
+        stroke: mainView === k ? '2.2' : '1.7',
+        color: mainView === k ? TEAL : T2,
+        weight: mainView === k ? '700' : '500',
+        bg: mainView === k ? TINT : 'transparent'
+      })),
+
+      maData: {
+        empty: st.empty, logged: st.logged, values: vals,
+        openSheet: () => this.setState({ sheet: true, step: 0, single: false }),
+        openField: i => this.setState({ sheet: true, step: i, single: true }),
+        openEsely: this.go('esely'),
+        openTrend: this.go('trendek'),
+        mini: this.chart([36.44, null, 36.39, 36.37, 36.85, 36.41, 36.36], 6, 36.28, 36.92),
+        markPeriod: () => this.setState({ sheet: true, step: 4 })
+      },
+      maPanel: (() => {
+        const PHASE = MAPANEL_PHASE;
+        const d = {
+        empty: st.empty, logged: st.logged, values: parentValsForPanel,
+        openSheet: () => this.setState({ sheet: true, step: 0, single: false }),
+        openField: i => this.setState({ sheet: true, step: i, single: true }),
+        openEsely: this.go('esely'),
+        openTrend: this.go('trendek'),
+        mini: this.chart([36.44, null, 36.39, 36.37, 36.85, 36.41, 36.36], 6, 36.28, 36.92),
+        markPeriod: () => this.setState({ sheet: true, step: 4 })
+      };
+    const vals = d.values || [];
+    const lo = 36.28, hi = 36.92;
+    const mini = d.mini || [];
+    const pt = p => p.x.toFixed(2) + ',' + p.y.toFixed(2);
+    const segs = [];
+    let run = [];
+    for (let i = 0; i < 7; i++) {
+      const hit = mini.find(p => p.i === i);
+      if (hit) run.push(hit); else { if (run.length) segs.push(run); run = []; }
+    }
+    if (run.length) segs.push(run);
+    const miniGaps = [];
+    for (let k = 0; k < segs.length - 1; k++) {
+      miniGaps.push({ pts: pt(segs[k][segs[k].length - 1]) + ' ' + pt(segs[k + 1][0]) });
+    }
+
+    // 5 hetes ablak: 2 hét előre, 2 hét vissza a mai hetéhez képest (hétfőtől vasárnapig)
+    // aug. 3. hétfő … szept. 6. vasárnap; ciklus 1. nap = aug. 10.
+    const cycleDays = [];
+    for (let i = 0; i < 35; i++) {
+      const abs = 3 + i;
+      const inAug = abs <= 31;
+      const dayNum = inAug ? abs : abs - 31;
+      const cd = abs - 9;
+      let bg = '#f0f2fb', fg = '#6a7095', weight = '500', ring = 'none';
+      if (cd < 1) { bg = '#f7f8fd'; fg = '#9aa0bd'; }
+      else if (cd <= 5) { bg = '#6f71d6'; fg = '#ffffff'; }
+      else if (cd >= 14 && cd <= 18) { bg = '#5a5cd6'; fg = '#ffffff'; weight = '700'; ring = '0 0 0 3px rgba(90,92,214,.25)'; }
+      else if (cd >= 9 && cd < 14) { bg = '#c6d6ff'; fg = '#26365f'; }
+      else if (cd >= 26) { bg = '#dcdef4'; fg = '#4a4f75'; }
+      else if (cd > 18) { bg = '#e8eaf6'; fg = '#4a4f75'; }
+      const today = abs === 23;
+      if (today) weight = '700';
+      cycleDays.push({
+        n: dayNum, bg, fg, weight,
+        tag: dayNum === 1 ? 'szept.' : (today ? 'ma' : ''),
+        tagFg: today ? '#2c2d63' : (cd >= 14 && cd <= 18 ? '#e4e5fb' : '#6a7095'),
+        ring: today ? 'inset 0 0 0 2px #21243d' : ring
+      });
+    }
+
+    return {
+      cycleDays,
+      phaseLabel: PHASE.label,
+      remainingLabel: PHASE.remaining + ' nap',
+      remainingDots: Array.from({ length: PHASE.total }, (_, i) => ({ bg: i < PHASE.elapsed ? 'rgba(255,255,255,.35)' : '#ffffff' })),
+      weekHeads: ['H', 'K', 'Sz', 'Cs', 'P', 'Szo', 'V'],
+      weekRange: 'aug. 3. – szept. 6.',
+      cycleLegend: [
+        { label: 'Menstruáció', bg: '#6f71d6' },
+        { label: 'Termékeny', bg: '#c6d6ff' },
+        { label: 'Ovuláció', bg: '#5a5cd6' },
+        { label: 'Luteális', bg: '#e8eaf6' },
+        { label: 'Becsült mens', bg: '#dcdef4' }
+      ],
+      isEmpty: !!d.empty,
+      hasData: !d.empty,
+      isLogged: !d.empty && !!d.logged,
+      notLogged: !d.empty && !d.logged,
+      open: d.openSheet,
+      openEsely: d.openEsely,
+      openTrend: d.openTrend,
+      mark: d.markPeriod,
+      emptySteps: [
+        { n: '1', txt: 'Rögzítsd a testhőt minden reggel, felkelés előtt — ez adja a görbe gerincét.' },
+        { n: '2', txt: 'Jelöld a menstruáció első napját; innen indul a ciklusszámítás.' },
+        { n: '3', txt: 'A nyák és az LH-teszt gyorsítja az ovuláció felismerését, de nem kötelező.' }
+      ],
+      loggedCount: vals.filter(v => v.value).length + ' / 7 kitöltve',
+      openAll: d.openSheet,
+      fields: vals.map(v => ({
+        label: v.label,
+        value: v.value || 'nincs rögzítve',
+        fg: v.value ? T : T4,
+        weight: v.value ? '700' : '500',
+        bg: v.value ? '#eef1ff' : '#f7f8fd',
+        action: v.value ? 'módosítás' : 'rögzítés',
+        go: () => d.openField && d.openField(v.i)
+      })),
+      timingDays: [9,10,11,12,13,14,15,16,17,18].map(n => {
+        const cnt = { 8: 1, 11: 2, 13: 1 }[n] || 0;
+        const future = n > 14;
+        const isOvu = n >= 14 && n <= 18;
+        return {
+          bg: cnt ? TEAL : (future ? '#f5f7fe' : '#e3e8fb'),
+          hasCount: cnt > 0, count: cnt,
+          ring: isOvu ? 'inset 0 0 0 2px #5a5cd6' : 'none',
+          short: 'aug.' + (9 + n),
+          dateWeight: isOvu ? '700' : '500',
+          dateColor: isOvu ? '#3a3c9e' : '#a8adc7'
+        };
+      }),
+      coverTop: (((hi - 36.44) / (hi - lo)) * 100) + '%',
+      miniSegs: segs.filter(g => g.length > 1).map(g => ({ pts: g.map(pt).join(' ') })),
+      miniGaps,
+      miniDots: mini.map(p => ({
+        x: p.x + '%', y: p.y + '%',
+        ring: p.v > 36.7 ? '0 0 0 4px rgba(170,196,255,.22)' : '0 1px 2px rgba(33,36,61,.2)'
+      })),
+      yesterday: [
+        { text: '36,36 °C', color: T2, bg: '#f5f7fe' },
+        { text: 'Nyák: nyúlós', color: '#3a3c9e', bg: '#eef1ff' },
+        { text: 'LH: pozitív', color: '#3a3c9e', bg: '#c6d6ff' },
+        { text: 'Együttlét', color: '#5a5cd6', bg: '#eef1ff' },
+        { text: 'Görcs: nincs', color: T2, bg: '#f5f7fe' }
+      ]
+    };
+      })(),
+
+      phaseSegs,
+      phaseLegend: [
+        { label: 'Menstruáció', bg: PLUM },
+        { label: 'Termékeny', bg: '#c6d6ff' },
+        { label: 'Ovulációs ablak', bg: AMB },
+        { label: 'Luteális', bg: '#e0e3ef' },
+        { label: 'Becsült mens', bg: '#b9bbe8' }
+      ],
+      ovuBarLeft: ((OVU_A - 1) / TOTAL * 100) + '%', ovuBarW: ((OVU_B - OVU_A + 1) / TOTAL * 100) + '%',
+      todayLeft: ((DAY - 0.5) / TOTAL * 100) + '%',
+      nextBarLeft: (25 / TOTAL * 100) + '%', nextBarW: (5 / TOTAL * 100) + '%',
+      gridDays, gridRows,
+
+      bbtRows,
+      bandLeft: lenPos(26), bandW: (((31 - 26) / 9) * 100) + '%',
+      avgLeft: lenPos(28),
+      lenMarks: HIST.map(h => ({ left: lenPos(h.len), bg: Math.abs(h.len - 28) >= 2 ? '#5a5cd6' : '#b1b2ff' })),
+      lenAxis: [24, 26, 28, 30, 32].map(n => ({ n, left: lenPos(n) })),
+      lenStats: [
+        { value: '26', label: 'legrövidebb', bg: '#f5f7fe', fg: T },
+        { value: '31', label: 'leghosszabb', bg: '#f5f7fe', fg: T },
+        { value: '13,2', label: 'luteális', bg: '#eef1ff', fg: '#2f3170' },
+        { value: '86%', label: 'rögzített', bg: '#f5f7fe', fg: T }
+      ],
+      historyRows: HIST.slice().reverse().map(h => {
+        const d = h.len - 28;
+        const big = Math.abs(d) >= 2;
+        return {
+          label: h.label, len: h.len + ' nap', lut: h.lut + ' nap',
+          dev: d === 0 ? 'átlagos' : (d > 0 ? '+' : '−') + Math.abs(d) + ' nap',
+          devFg: d === 0 ? '#626884' : (big ? '#2f3170' : '#4a4cbd'),
+          devBg: d === 0 ? '#f0f2fb' : (big ? '#c6d6ff' : '#eef1ff'),
+          rowBg: big ? '#f5f7fe' : 'transparent',
+          timing: h.timing, timingColor: tColor(h.timing), timingBg: tBg(h.timing)
+        };
+      }),
+
+      weekHeads: ['H', 'K', 'Sz', 'Cs', 'P', 'Szo', 'V'],
+      calCells,
+      calMonthIdx: calIdx,
+      calIsAnchor: !!md.anchor,
+      calNoData: !md.anchor,
+      monthOptions,
+      calPrev: () => this.setState({ calMonthIdx: Math.max(0, calIdx - 1) }),
+      calNext: () => this.setState({ calMonthIdx: Math.min(MONTH_DEFS.length - 1, calIdx + 1) }),
+      calSelect: e => this.setState({ calMonthIdx: Number(e.target.value) }),
+      calLegend: [
+        { label: 'Menstruáció', bg: '#8386e6' },
+        { label: 'Termékeny', bg: '#cfdcff' },
+        { label: 'Ovulációs ablak', bg: '#b1b2ff' },
+        { label: 'Luteális', bg: '#eaecf4' },
+        { label: 'Ma', bg: TEAL }
+      ],
+      selTitle: selMd.short + ' ' + st.sel + '.',
+      selCycleDay: selInCycle ? selCd + '. ciklusnap' : 'cikluson kívül',
+      selRows, selHasData, selEmpty: !selHasData,
+      openSheet: () => this.setState({ sheet: true, step: 0 }),
+
+      fertileDays,
+      remainingDots: (() => {
+        const total = OVU_B - OVU_A + 1;
+        const elapsed = Math.max(0, Math.min(total, DAY - OVU_A + 1));
+        return Array.from({ length: total }, (_, i) => ({ bg: i < elapsed ? 'rgba(255,255,255,.35)' : '#ffffff' }));
+      })(),
+      histBarRows: HIST.slice().reverse().map(h => ({
+        label: h.label.split(' ')[0], timing: h.timing, bg: tSolid(h.timing), w: tW(h.timing)
+      })),
+      histBarSummary: HIST.filter(h => h.timing === 'Jó').length + ' jó a ' + HIST.length + '-ból',
+      methodNotes: [
+        'Az ovulációs ablak a hat legutóbbi ciklus hosszából és luteális fázisából jön, az LH-teszttel korrigálva.',
+        'A minősítés csak az együttlétek időzítését nézi az ablakhoz képest — nem termékenységi becslés.',
+        'A hiányzó napokat nem pótolja becsléssel: ahol nincs adat, ott „nincs bejegyzés” szerepel.',
+        'Nem veszi figyelembe az életkort, spermaminőséget, gyógyszereket és semmilyen orvosi tényezőt.'
+      ],
+
+      sheet: st.sheet, toast: st.toast,
+      sheetTitle: STEPS[st.step],
+      sheetCount: st.single ? 'egy mező' : (st.step + 1) + ' / 8',
+      stepDots: STEPS.map((s, i) => ({
+        bg: i === st.step ? TEAL : (st.skipped[i] ? '#d8dcec' : (i < st.step ? '#c6d6ff' : '#e3e8fb')),
+        go: () => this.setState({ step: i })
+      })),
+      step0: st.step === 0, step1: st.step === 1, step2: st.step === 2,
+      step3: st.step === 3, step4: st.step === 4, step5: st.step === 5, step6: st.step === 6, step7: st.step === 7,
+      notLast: st.step < 7,
+      moodChips: MOOD_L.map(m => ({
+        label: MOOD_E[m] + ' ' + m,
+        selected: st.moods.indexOf(m) >= 0,
+        bg: st.moods.indexOf(m) >= 0 ? TINT : '#f5f7fe',
+        ring: ring(st.moods.indexOf(m) >= 0, TEAL),
+        fg: st.moods.indexOf(m) >= 0 ? TEAL : T,
+        toggle: () => {
+          const has = st.moods.indexOf(m) >= 0;
+          const next = has ? st.moods.filter(x => x !== m) : [...st.moods, m];
+          this.setState({ moods: next, skipped: { ...st.skipped, 6: false } });
+        }
+      })),
+      isSingle: st.single,
+      notSingle: !st.single,
+      showSkip: !st.single && st.step < 6,
+      canBack: !st.single && st.step > 0,
+      back: () => this.setState({ step: Math.max(0, st.step - 1) }),
+      nextLabel: st.single || st.step === 6 ? 'Mentés' : 'Tovább',
+      closeSheet: () => this.setState({ sheet: false, single: false }),
+      skip: () => this.setState({ skipped: { ...st.skipped, [st.step]: true }, step: Math.min(st.step + 1, 6) }),
+      next: () => {
+        if (st.single || st.step === 7) {
+          this.setState({ sheet: false, single: false, logged: true, toast: true });
+          clearTimeout(this._toastT);
+          this._toastT = setTimeout(() => this.setState({ toast: false }), 3400);
+        } else this.setState({ step: st.step + 1 });
+      },
+      undo: () => { clearTimeout(this._toastT); this.setState({ toast: false, logged: false }); },
+
+      wRef: this.wheelRef('w', 35), tRef: this.wheelRef('t', 0), hRef: this.wheelRef('h', 0),
+      whole: this.wheel([35, 36, 37, 38], 'w'),
+      tenths: this.wheel([0,1,2,3,4,5,6,7,8,9], 't'),
+      hundredths: this.wheel([0,1,2,3,4,5,6,7,8,9], 'h'),
+
+      mucusScale: MUCUS_L.map((l, i) => ({
+        label: l,
+        bg: st.mucus === i ? TEAL : 'rgba(170,196,255,' + (0.14 + i * 0.2) + ')',
+        ring: ring(st.mucus === i, '#3a3c9e'),
+        fg: st.mucus === i ? TEAL : T2,
+        pick: this.set('mucus', i, 1)
+      })),
+      lhOpts: LH_L.map((l, i) => ({
+        label: l,
+        note: i === 0 ? 'halvány vagy nincs csík' : i === 1 ? 'a tesztcsík látható' : 'a legsötétebb eddig',
+        bg: st.lh === i ? TINT : '#f5f7fe',
+        ring: ring(st.lh === i, TEAL),
+        fg: st.lh === i ? AMB_T : T,
+        pick: this.set('lh', i, 2)
+      })),
+      crampNoneSelected: st.crampI === 0,
+      crampTypes: CRAMP_T.map(l => {
+        const disabled = st.crampI === 0;
+        return {
+          label: l,
+          bg: disabled ? '#f5f7fe' : (st.crampT === l ? TINT : '#f5f7fe'),
+          ring: disabled ? 'none' : ring(st.crampT === l, TEAL),
+          fg: disabled ? '#c1c5db' : (st.crampT === l ? TEAL : T),
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          opacity: disabled ? '.55' : '1',
+          pick: disabled ? (() => {}) : (() => this.setState({ crampT: l, crampI: st.crampI == null ? 1 : st.crampI, skipped: { ...st.skipped, 3: false } }))
+        };
+      }),
+      crampScale: CRAMP_L.map((l, i) => ({
+        label: l, h: (24 + i * 15) + 'px',
+        bg: st.crampI === i ? TEAL : 'rgba(90,92,214,' + (0.1 + i * 0.16) + ')',
+        ring: ring(st.crampI === i, '#3a3c9e'),
+        fg: st.crampI === i ? TEAL : T2,
+        pick: () => this.setState({ crampI: i, skipped: { ...st.skipped, 3: false } })
+      })),
+      flowScale: FLOW_L.map((l, i) => ({
+        label: l, h: (22 + i * 14) + 'px',
+        bg: st.flow === i ? PLUM : 'rgba(150,152,226,' + (0.12 + i * 0.17) + ')',
+        ring: ring(st.flow === i, '#3a3c9e'),
+        fg: st.flow === i ? PLUM_T : T2,
+        pick: () => this.setState({ flow: i, skipped: { ...st.skipped, 4: false } })
+      })),
+      togglePeriodStart: () => this.setState({ periodStart: !st.periodStart, skipped: { ...st.skipped, 4: false } }),
+      psBg: st.periodStart ? '#e6e7fb' : '#f5f7fe',
+      psRing: ring(st.periodStart, '#6f71d6'),
+      psFg: st.periodStart ? '#3a3c9e' : T,
+      psBoxBg: st.periodStart ? '#6f71d6' : '#ffffff',
+      psBoxRing: st.periodStart ? 'none' : 'inset 0 0 0 2px #d8dcec',
+      psMark: st.periodStart ? '✓' : '',
+      sexPlus: () => this.setState({ sexEvents: [...st.sexEvents, { protected: false }].slice(0, 6), sexSet: true, skipped: { ...st.skipped, 5: false } }),
+      sexMinus: () => this.setState({ sexEvents: st.sexEvents.slice(0, -1), sexSet: true, skipped: { ...st.skipped, 5: false } }),
+      sexCount: st.sexEvents.length,
+      hasSexEvents: st.sexEvents.length > 0,
+      sexEvents: st.sexEvents.map((ev, i) => ({
+        label: (i + 1) + '. alkalom',
+        trackBg: ev.protected ? TEAL : '#dde1ef',
+        knobLeft: ev.protected ? '21.5px' : '2.5px',
+        toggle: () => {
+          const next = st.sexEvents.slice();
+          next[i] = { protected: !next[i].protected };
+          this.setState({ sexEvents: next });
+        }
+      })),
+      sexLabel: st.sexEvents.length === 0 ? 'Ma nem volt' : (st.sexEvents.length === 1 ? 'Egy alkalom' : st.sexEvents.length + ' alkalom'),
+      sexNote: st.sexSet ? 'rögzítve' : 'állítsd be a mai számot',
+      sexBg: st.sexEvents.length > 0 ? TINT : '#f5f7fe',
+      sexRing: ring(st.sexEvents.length > 0, TEAL),
+      sexFg: st.sexEvents.length > 0 ? TEAL : T,
+      sexMinusFg: st.sexEvents.length > 0 ? '#3a3c9e' : '#a8adc7',
+      summaryRows
+    };
+  }
+}
+
+</script>
+
+
+</body></html>
