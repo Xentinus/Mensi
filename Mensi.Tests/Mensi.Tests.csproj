@@ -33,4 +33,9 @@
     <ProjectReference Include="..\Mensi.Server\Mensi.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Anonimizált Period Tracker riport-fixture a PDF-import teszteléséhez. -->
+    <None Include="Fixtures\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

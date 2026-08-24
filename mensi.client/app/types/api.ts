@@ -110,3 +110,14 @@ export interface Chance {
   whatIfHint: string | null
   history: { goodCount: number; totalCount: number; cycles: { startDate: string; timing: TimingSummary }[] } | null
 }
+
+export interface ImportResult {
+  applied: boolean
+  cyclesFound: number
+  from: string | null
+  to: string | null
+  lhTestCount: number
+  daysWritten: number
+  fieldsSkipped: number
+  warnings: string[]
+}

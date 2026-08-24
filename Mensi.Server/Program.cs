@@ -39,6 +39,7 @@ try
     builder.Services.AddScoped<CurrentUser>();
     builder.Services.AddScoped<AuditWriter>();
     builder.Services.AddScoped<CycleRecomputeService>();
+    builder.Services.AddScoped<PcReportImporter>();
     builder.Services.AddHostedService<AuditRetentionService>();
 
     // Cloudflare Access: élesben kötelező — verifikáció nélkül a host nem indulhat el.

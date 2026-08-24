@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { CalendarMonth, DailyLog } from '~/types/api'
+import type { CalendarMonth, DailyLog, ImportResult } from '~/types/api'
 import { CAL_COLORS, FIELD_LABELS, FIELD_ORDER } from '~/utils/labels'
 import { fieldValue } from '~/utils/fieldValue'
-import { monthTitle } from '~/utils/format'
+import { formatDateShort, monthTitle } from '~/utils/format'
 
 const store = useAppStore()
 const api = useApi()
@@ -85,6 +85,60 @@ const isFutureSelected = computed(() => {
   return !!(selectedDate.value && selectedDate.value > today)
 })
 const dayNum = (iso: string) => Number(iso.slice(8))
+
+// --- Period Tracker PDF import ---
+const importInput = ref<HTMLInputElement | null>(null)
+const importFile = ref<File | null>(null)
+const importPreview = ref<ImportResult | null>(null)
+const importBusy = ref(false)
+const importError = ref<string | null>(null)
+const importDone = ref<ImportResult | null>(null)
+
+async function pickImportFile(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0] ?? null
+  if (!file) return
+  importFile.value = file
+  importPreview.value = null
+  importDone.value = null
+  importError.value = null
+  importBusy.value = true
+  try {
+    importPreview.value = await api.importPcReport(file, true)
+  }
+  catch {
+    importError.value = 'A fájl nem dolgozható fel PDF-riportként.'
+    importFile.value = null
+  }
+  finally {
+    importBusy.value = false
+    if (importInput.value) importInput.value.value = ''
+  }
+}
+
+async function applyImport() {
+  if (!importFile.value) return
+  importBusy.value = true
+  importError.value = null
+  try {
+    importDone.value = await api.importPcReport(importFile.value, false)
+    importPreview.value = null
+    importFile.value = null
+    store.refresh()
+    if (month.value) await loadMonth(month.value)
+  }
+  catch {
+    importError.value = 'Az importálás nem sikerült — próbáld újra.'
+  }
+  finally {
+    importBusy.value = false
+  }
+}
+
+function cancelImport() {
+  importFile.value = null
+  importPreview.value = null
+  importError.value = null
+}
 </script>
 
 <template>
@@ -142,6 +196,45 @@ const dayNum = (iso: string) => Number(iso.slice(8))
         </button>
       </div>
     </div>
+
+    <div class="card">
+      <div class="section-title">Importálás</div>
+      <div class="import-sub">Period Tracker / Period Calendar PDF-riport beolvasása: cikluskezdetek,
+        menstruáció-napok és ovulációs tesztek. A meglévő bejegyzéseket nem írja felül.</div>
+
+      <input ref="importInput" type="file" accept="application/pdf,.pdf" hidden @change="pickImportFile">
+
+      <div v-if="importError" class="import-error">{{ importError }}</div>
+
+      <template v-if="importPreview">
+        <div class="import-preview">
+          <div class="import-line"><b>{{ importPreview.cyclesFound }}</b> ciklus
+            <template v-if="importPreview.from"> ({{ formatDateShort(importPreview.from) }} – {{ formatDateShort(importPreview.to!) }})</template>
+            · <b>{{ importPreview.lhTestCount }}</b> LH-teszt</div>
+          <div class="import-line"><b>{{ importPreview.daysWritten }}</b> nap íródna
+            <template v-if="importPreview.fieldsSkipped > 0"> · {{ importPreview.fieldsSkipped }} mező kihagyva (már van adat)</template></div>
+          <div v-for="(w, i) in importPreview.warnings" :key="i" class="import-warning">⚠ {{ w }}</div>
+        </div>
+        <div class="import-actions">
+          <button class="btn btn-ghost import-btn" :disabled="importBusy" @click="cancelImport">Mégse</button>
+          <button class="btn btn-primary import-btn" :disabled="importBusy || importPreview.daysWritten === 0"
+            @click="applyImport">Importálás</button>
+        </div>
+      </template>
+
+      <template v-else-if="importDone">
+        <div class="import-preview">
+          <div class="import-line">✓ Importálva: <b>{{ importDone.daysWritten }}</b> nap,
+            <b>{{ importDone.cyclesFound }}</b> ciklus, <b>{{ importDone.lhTestCount }}</b> LH-teszt.</div>
+          <div v-for="(w, i) in importDone.warnings" :key="i" class="import-warning">⚠ {{ w }}</div>
+        </div>
+        <button class="btn btn-ghost import-btn" @click="importDone = null">Rendben</button>
+      </template>
+
+      <button v-else class="btn btn-ghost import-btn" :disabled="importBusy" @click="importInput?.click()">
+        {{ importBusy ? 'Feldolgozás…' : 'PDF kiválasztása' }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -177,6 +270,14 @@ const dayNum = (iso: string) => Number(iso.slice(8))
 .sel-chip { margin-left: auto; color: var(--primary); background: var(--tint); font-size: 11.5px; }
 .sel-empty { margin-top: 14px; padding: 26px 14px; border-radius: 14px; background: #f5f7fe; text-align: center; font-size: 13px; color: var(--ink-2); }
 .sel-add { display: block; margin: 12px auto 0; border: 0; background: var(--tint); color: var(--primary-deep); font: 700 12px 'Montserrat', sans-serif; border-radius: 99px; padding: 9px 18px; cursor: pointer; }
+.import-sub { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; margin-top: 6px; }
+.import-error { margin-top: 12px; font-size: 12.5px; color: #b3261e; }
+.import-preview { margin-top: 14px; background: var(--surface); border-radius: 14px; padding: 13px 14px; display: flex; flex-direction: column; gap: 6px; }
+.import-line { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.import-warning { font-size: 12px; color: #8a5a00; }
+.import-actions { display: flex; gap: 10px; margin-top: 12px; }
+.import-btn { margin-top: 12px; padding: 13px 0; font-size: 13px; }
+.import-actions .import-btn { flex: 1; margin-top: 0; }
 .sel-rows { display: flex; flex-direction: column; gap: 2px; margin-top: 12px; }
 .sel-row {
   display: flex; align-items: center; padding: 12px 14px; border-radius: 12px; border: 0;

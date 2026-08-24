@@ -39,6 +39,10 @@ public static class ApiEndpoints
 
         api.MapPut("/logs/{date}", UpsertLogAsync);
         api.MapPut("/logs/{date}/intercourse", SetIntercourseAsync);
+
+        // Period Tracker PDF-riport import. Antiforgery kikapcsolva: API-only kliens,
+        // a védelem a Cloudflare Access; a fájl mérete korlátozott.
+        api.MapPost("/import/pc-report", ImportPcReportAsync).DisableAntiforgery();
     }
 
     private static async Task<ModelInput> LoadAsync(MensiDbContext db, TodayProvider today)
@@ -179,6 +183,33 @@ public static class ApiEndpoints
         await recompute.RecomputeAsync();
 
         return Results.Ok(ReadModelBuilder.MapOne(await LoadAsyncFor(db, date, todayProvider), date));
+    }
+
+    private static async Task<IResult> ImportPcReportAsync(
+        IFormFile? file, bool? dryRun, PcReportImporter importer, CancellationToken ct)
+    {
+        if (file is null || file.Length == 0)
+            return Problem("Hiányzó PDF fájl.");
+        if (file.Length > 5 * 1024 * 1024)
+            return Problem("A PDF legfeljebb 5 MB lehet.");
+
+        byte[] bytes;
+        await using (var stream = new MemoryStream())
+        {
+            await file.CopyToAsync(stream, ct);
+            bytes = stream.ToArray();
+        }
+
+        try
+        {
+            var result = await importer.ImportAsync(bytes, dryRun ?? false, ct);
+            return Results.Ok(result);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // PdfPig hibája érvénytelen/sérült fájlra — a részletek a logba, nem a válaszba.
+            return Problem("A fájl nem dolgozható fel PDF-riportként.");
+        }
     }
 
     private static async Task<ModelInput> LoadAsyncFor(

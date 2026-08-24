@@ -1,4 +1,4 @@
-import type { CalendarMonth, Chance, DailyLog, IntercourseEvent, LogPatch, Overview, Trends } from '~/types/api'
+import type { CalendarMonth, Chance, DailyLog, ImportResult, IntercourseEvent, LogPatch, Overview, Trends } from '~/types/api'
 
 export function useApi() {
   return {
@@ -14,6 +14,13 @@ export function useApi() {
       $fetch<DailyLog>(`/api/logs/${date}`, { method: 'PUT', body: patch }),
     saveIntercourse: (date: string, events: { protected: boolean | null }[]) =>
       $fetch<DailyLog>(`/api/logs/${date}/intercourse`, { method: 'PUT', body: { events } }),
+    importPcReport: (file: File, dryRun: boolean) => {
+      const body = new FormData()
+      body.append('file', file)
+      return $fetch<ImportResult>('/api/import/pc-report', {
+        method: 'POST', query: { dryRun }, body,
+      })
+    },
   }
 }
 

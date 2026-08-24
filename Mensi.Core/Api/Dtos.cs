@@ -52,3 +52,7 @@ public sealed record ChanceHistoryCycleDto(DateOnly StartDate, TimingSummaryDto 
 public sealed record ChanceHistoryDto(int GoodCount, int TotalCount, IReadOnlyList<ChanceHistoryCycleDto> Cycles);
 public sealed record ChanceDto(bool IsEmpty, TimingSummaryDto? Timing, string? Explanation,
     string? ConfidenceNote, FertileWindowDto? FertileWindow, string? WhatIfHint, ChanceHistoryDto? History);
+
+public sealed record ImportResultDto(
+    bool Applied, int CyclesFound, DateOnly? From, DateOnly? To,
+    int LhTestCount, int DaysWritten, int FieldsSkipped, IReadOnlyList<string> Warnings);

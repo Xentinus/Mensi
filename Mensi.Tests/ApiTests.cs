@@ -208,4 +208,57 @@ public class ApiTests(PostgresFixture fixture) : IAsyncLifetime
         var response = await _client.GetAsync("/api/nincs-ilyen");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    private static MultipartFormDataContent FixtureUpload()
+    {
+        var bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "pc-report-fixture.pdf"));
+        var content = new MultipartFormDataContent();
+        var filePart = new ByteArrayContent(bytes);
+        filePart.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/pdf");
+        content.Add(filePart, "file", "pc-report.pdf");
+        return content;
+    }
+
+    [Fact]
+    public async Task Pc_report_import_dry_run_previews_then_apply_is_idempotent()
+    {
+        using var dryContent = FixtureUpload();
+        var dry = await _client.PostAsync("/api/import/pc-report?dryRun=true", dryContent);
+        Assert.Equal(HttpStatusCode.OK, dry.StatusCode);
+        var preview = await dry.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.False(preview.GetProperty("applied").GetBoolean());
+        Assert.Equal(5, preview.GetProperty("cyclesFound").GetInt32());
+        Assert.True(preview.GetProperty("daysWritten").GetInt32() > 0);
+
+        await using (var db = fixture.CreateContext())
+            Assert.Equal(0, await db.DailyLogs.CountAsync()); // dry-run nem ír
+
+        using var applyContent = FixtureUpload();
+        var apply = await _client.PostAsync("/api/import/pc-report", applyContent);
+        var result = await apply.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.True(result.GetProperty("applied").GetBoolean());
+
+        await using (var db = fixture.CreateContext())
+        {
+            Assert.Equal(5, await db.DailyLogs.CountAsync(l => l.PeriodStart));
+            Assert.True(await db.Cycles.CountAsync() >= 4);
+            Assert.Equal(1, await db.AuditEntries.CountAsync(a => a.Action == "import.pcReport"));
+        }
+
+        using var againContent = FixtureUpload();
+        var again = await _client.PostAsync("/api/import/pc-report", againContent);
+        var second = await again.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.False(second.GetProperty("applied").GetBoolean()); // minden mező már kitöltött
+        Assert.Equal(0, second.GetProperty("daysWritten").GetInt32());
+    }
+
+    [Fact]
+    public async Task Pc_report_import_rejects_non_pdf()
+    {
+        using var content = new MultipartFormDataContent();
+        var filePart = new ByteArrayContent("nem pdf"u8.ToArray());
+        content.Add(filePart, "file", "x.pdf");
+        var response = await _client.PostAsync("/api/import/pc-report", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }

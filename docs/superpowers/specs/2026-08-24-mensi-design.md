@@ -449,6 +449,18 @@ A Módszertan blokk statikus frontend-szöveg, a %-döntéshez igazítva (az es�
 Wilcox-adatokon alapuló becslés, nem orvosi termékenységi vizsgálat; életkort,
 spermaminőséget, gyógyszereket nem vesz figyelembe; hiányzó napot nem pótol).
 
+**`POST /api/import/pc-report?dryRun=`** — Period Tracker / Period Calendar PDF-riport
+import (multipart, max 5 MB). A riport szöveges részeit dolgozza fel: ciklustörténet
+(kezdet + menstruáció-hossz → `period_start` + folyásnapok: 1. nap közepes, többi enyhe)
+és ovulációs tesztek (Low/Negative→negatív, High→pozitív, Peak→csúcs); a grafikonok
+raszterképek, azokból napi adat nem nyerhető ki. Évkövetkeztetés az explicit évszám-
+horgonyokból és a ciklusok folytonosságából; LH-teszt éve a CD + cikluskezdet
+egyezésből. **Nem destruktív**: csak üres mezőt ír, meglévőt sosem — idempotens.
+`dryRun=true` előnézetet ad írás nélkül. Válasz: `ImportResultDto` (applied,
+cyclesFound, from/to, lhTestCount, daysWritten, fieldsSkipped, warnings). Sikeres
+import: egy audit-sor (`import.pcReport`, darabszámokkal) + egy recompute.
+A UI a Bejegyzések nézet „Importálás" kártyája: PDF kiválasztás → előnézet → megerősítés.
+
 **`GET /health`** — 200 OK, Access előtt.
 
 ### 5.3 Validáció és hibák
