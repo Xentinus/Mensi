@@ -113,7 +113,18 @@ public static class ApiEndpoints
         // Konzisztencia: "nincs görcs" mellett nincs hely; hely csak erősséggel együtt értelmes.
         if (log.CrampSeverity is 0 && log.CrampType is not null)
         {
-            changes["crampType"] = (log.CrampType, null);
+            // Ha a fenti Apply(request.CrampType, ...) ebben a kérésben már beírt egy crampType
+            // változást, log.CrampType már a kérésbeli (itt törlendő) értékre mutat — az igazi,
+            // kérés előtti perzisztált értéket a changes-beli bejegyzés Old mezője őrzi. Enélkül
+            // a mutált mezőből olvasva egy soha meg nem történt (pl. null→"abdomen"→null helyett
+            // "abdomen"→null-nak látszó) átmenet kerülne az auditba.
+            var trueOld = changes.TryGetValue("crampType", out var priorChange)
+                ? priorChange.Old
+                : log.CrampType;
+            if (trueOld is null)
+                changes.Remove("crampType"); // null → null: nincs tényleges változás, nem auditáljuk
+            else
+                changes["crampType"] = (trueOld, null);
             log.CrampType = null;
         }
 

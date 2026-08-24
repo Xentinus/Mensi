@@ -88,6 +88,30 @@ public class ApiTests(PostgresFixture fixture) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Cramp_type_and_severity_zero_together_do_not_fabricate_audit_history()
+    {
+        // Üres napon egyetlen kérésben érkezik crampType és crampSeverity=0 együtt: a konzisztencia-
+        // szabály törli a crampType-ot, de a valódi, kérés előtti állapot null volt — a perzisztált
+        // átmenet null→null, ami nem auditálható eseményként, csak a crampSeverity null→0 az.
+        var date = Today.AddDays(-1);
+        var response = await PutLog(date, new { crampType = "abdomen", crampSeverity = 0 });
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var log = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(JsonValueKind.Null, log.GetProperty("crampType").ValueKind);
+
+        await using var db = fixture.CreateContext();
+        var audits = await db.AuditEntries.OrderBy(a => a.Id).ToListAsync();
+        var audit = Assert.Single(audits);
+        using var changes = JsonDocument.Parse(audit.ChangesJson);
+        Assert.False(changes.RootElement.TryGetProperty("crampType", out _),
+            "a crampType kulcsnak hiányoznia kell: a valódi átmenet null->null volt, nem auditálható esemény");
+        Assert.True(changes.RootElement.TryGetProperty("crampSeverity", out var severityChange));
+        Assert.Equal(JsonValueKind.Null, severityChange.GetProperty("old").ValueKind);
+        Assert.Equal(0, severityChange.GetProperty("new").GetInt32());
+    }
+
+    [Fact]
     public async Task Period_start_builds_cycles_and_writes_prediction_once()
     {
         var first = Today.AddDays(-56);
