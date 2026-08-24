@@ -58,4 +58,5 @@ public sealed record ImportCycleDto(DateOnly StartDate, int PeriodDays);
 public sealed record ImportResultDto(
     bool Applied, int CyclesFound, DateOnly? From, DateOnly? To,
     int LhTestCount, int DaysWritten, int FieldsSkipped,
+    int BbtCount, int IntercourseDays, int MucusDays, int SymptomMoodDays,
     IReadOnlyList<ImportCycleDto> Cycles, IReadOnlyList<string> Warnings);

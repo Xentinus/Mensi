@@ -457,13 +457,25 @@ A Módszertan blokk statikus frontend-szöveg, a %-döntéshez igazítva (az es�
 Wilcox-adatokon alapuló becslés, nem orvosi termékenységi vizsgálat; életkort,
 spermaminőséget, gyógyszereket nem vesz figyelembe; hiányzó napot nem pótol).
 
-**`POST /api/import/pc-report?dryRun=`** — Period Tracker / Period Calendar PDF-riport
-import (multipart, max 5 MB). A riport szöveges részeit dolgozza fel: ciklustörténet
-(kezdet + menstruáció-hossz → `period_start` + folyásnapok: 1. nap közepes, többi enyhe)
-és ovulációs tesztek (Low/Negative→negatív, High→pozitív, Peak→csúcs); a grafikonok
-raszterképek, azokból napi adat nem nyerhető ki. Évkövetkeztetés az explicit évszám-
-horgonyokból és a ciklusok folytonosságából; LH-teszt éve a CD + cikluskezdet
-egyezésből. **Nem destruktív**: csak üres mezőt ír, meglévőt sosem — idempotens.
+**`POST /api/import/pc-report?dryRun=&from=`** — Period Tracker / Period Calendar
+PDF-riport import (multipart, max 5 MB). Két forrásból dolgozik:
+
+1. *Szöveges részek*: ciklustörténet (kezdet + menstruáció-hossz → `period_start` +
+   szintetikus folyásnapok: 1. nap közepes, többi enyhe) és az ovulációs teszt-tábla.
+   Évkövetkeztetés az explicit évszám-horgonyokból és a ciklusok folytonosságából;
+   LH-teszt éve a CD + cikluskezdet egyezésből.
+2. *Grafikon-oldalak vektoros jelölői* (a rács szabályos: nap-oszlopok a fejléc-számokból,
+   sorok a bal címkékből, hőmérséklet a tengelyfeliratokból lineárisan, ~±0,02 °C):
+   folyás-intenzitás (Disaster→erős; felülírja a szintetikusat), BBT, nyák
+   (Watery→nedves), együttlét (Protected/Unprotected → napi 1 esemény), görcs
+   (Cramps→erősség 1), pecsételés (csak ha nincs aznap folyás), hangulat
+   (Sad→szomorú, Horny→vágyakozó, Exhausted→fáradt, Happy→vidám; a többi kihagyva),
+   ovulációs teszt (Low→negatív, High→pozitív, Peak→csúcs). A Weight/Sleep/Breast
+   oldalaknak nincs Mensi-megfelelője.
+
+`from` a kezdődátum-szűrő (cikluskezdet); LH-mapping: Low/Negative→negatív,
+High→pozitív, Peak→csúcs. **Nem destruktív**: csak üres mezőt ír, meglévőt sosem —
+idempotens.
 `dryRun=true` előnézetet ad írás nélkül. Válasz: `ImportResultDto` (applied,
 cyclesFound, from/to, lhTestCount, daysWritten, fieldsSkipped, warnings). Sikeres
 import: egy audit-sor (`import.pcReport`, darabszámokkal) + egy recompute.

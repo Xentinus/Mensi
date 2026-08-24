@@ -121,6 +121,10 @@ export interface ImportResult {
   lhTestCount: number
   daysWritten: number
   fieldsSkipped: number
+  bbtCount: number
+  intercourseDays: number
+  mucusDays: number
+  symptomMoodDays: number
   cycles: ImportCycle[]
   warnings: string[]
 }

@@ -243,6 +243,23 @@ public class ApiTests(PostgresFixture fixture) : IAsyncLifetime
             Assert.Equal(5, await db.DailyLogs.CountAsync(l => l.PeriodStart));
             Assert.True(await db.Cycles.CountAsync() >= 4);
             Assert.Equal(1, await db.AuditEntries.CountAsync(a => a.Action == "import.pcReport"));
+
+            // grafikonról jövő napi jelek (a fixture 2. oldala, Feb 28-i ciklus)
+            var mar9 = await db.DailyLogs.SingleAsync(l => l.Date == new DateOnly(2026, 3, 9));
+            Assert.NotNull(mar9.BbtCelsius); // ~36,60 (±0,02 a grafikon-visszamérés miatt)
+            Assert.Equal(Mensi.Core.Domain.LhTest.Negative, mar9.LhTest);
+            var mar12 = await db.DailyLogs.Include(l => l.Intercourse)
+                .SingleAsync(l => l.Date == new DateOnly(2026, 3, 12));
+            Assert.Equal(Mensi.Core.Domain.CervicalMucus.EggWhite, mar12.CervicalMucus);
+            Assert.Equal([Mensi.Core.Domain.Mood.Longing], mar12.Moods);
+            var mar11 = await db.DailyLogs.Include(l => l.Intercourse)
+                .SingleAsync(l => l.Date == new DateOnly(2026, 3, 11));
+            Assert.Single(mar11.Intercourse);
+            Assert.False(mar11.Intercourse[0].Protected);
+            var mar1 = await db.DailyLogs.SingleAsync(l => l.Date == new DateOnly(2026, 3, 1));
+            Assert.Equal((short)1, mar1.CrampSeverity);
+            var mar19 = await db.DailyLogs.SingleAsync(l => l.Date == new DateOnly(2026, 3, 19));
+            Assert.Equal(Mensi.Core.Domain.FlowIntensity.Spotting, mar19.FlowIntensity);
         }
 
         using var againContent = FixtureUpload();

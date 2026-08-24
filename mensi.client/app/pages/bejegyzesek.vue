@@ -252,9 +252,14 @@ function cancelImport() {
         </select>
 
         <div class="import-preview">
-          <div class="import-line">Ezzel a választással: <b>{{ importPreview.cyclesFound }}</b> ciklus,
-            <b>{{ importPreview.lhTestCount }}</b> LH-teszt · <b>{{ importPreview.daysWritten }}</b> nap íródna
+          <div class="import-line">Ezzel a választással: <b>{{ importPreview.cyclesFound }}</b> ciklus
+            · <b>{{ importPreview.daysWritten }}</b> nap íródna
             <template v-if="importPreview.fieldsSkipped > 0"> · {{ importPreview.fieldsSkipped }} mező kihagyva (már van adat)</template></div>
+          <div class="import-line import-detail">
+            {{ importPreview.intercourseDays }} együttlét-nap · {{ importPreview.lhTestCount }} LH-teszt ·
+            {{ importPreview.bbtCount }} testhő · {{ importPreview.mucusDays }} nyák ·
+            {{ importPreview.symptomMoodDays }} tünet/hangulat
+          </div>
         </div>
 
         <div class="import-actions">
@@ -316,6 +321,7 @@ function cancelImport() {
 .import-error { margin-top: 12px; font-size: 12.5px; color: #b3261e; }
 .import-preview { margin-top: 14px; background: var(--surface); border-radius: 14px; padding: 13px 14px; display: flex; flex-direction: column; gap: 6px; }
 .import-line { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.import-detail { font-size: 12px; color: var(--ink-3); }
 .import-warning { font-size: 12px; color: #8a5a00; }
 .import-actions { display: flex; gap: 10px; margin-top: 12px; }
 .import-from-label { display: block; margin-top: 14px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
