@@ -17,6 +17,8 @@ export interface DailyLog {
   bbtOutlier: boolean
   cervicalMucus: CervicalMucus | null
   lhTest: LhTest | null
+  /** A tesztcsík/kontrollcsík arány 0–1 skálán; a lhTest ebből származtatott. */
+  lhValue: number | null
   crampType: CrampType | null
   crampSeverity: number | null
   flowIntensity: FlowIntensity | null
@@ -31,6 +33,7 @@ export interface LogPatch {
   bbtCelsius?: number | null
   cervicalMucus?: CervicalMucus | null
   lhTest?: LhTest | null
+  lhValue?: number | null
   crampType?: CrampType | null
   crampSeverity?: number | null
   flowIntensity?: FlowIntensity | null
@@ -72,7 +75,7 @@ export interface TrendCycle {
 export interface BbtRow {
   date: string; cycleDay: number; value: number | null; deltaFromCoverline: number | null
   isOutlier: boolean; aboveCoverline: boolean
-  marks: { cervicalMucus: CervicalMucus | null; lhTest: LhTest | null }
+  marks: { cervicalMucus: CervicalMucus | null; lhTest: LhTest | null; lhValue: number | null }
 }
 export interface Trends {
   stats: {
@@ -89,6 +92,8 @@ export interface Trends {
 export interface CalendarDay {
   date: string; cycleDay: number | null; category: DayCategory
   hasBbt: boolean; intercourseCount: number; hasAnyEntry: boolean; isToday: boolean
+  /** Előrevetített (a nyitott ciklus becsült menstruációja utáni) nap. */
+  isProjected: boolean
 }
 export interface CalendarMonth {
   month: string

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { CervicalMucus, CrampType, DailyLog, FlowIntensity, LhTest, LogPatch, Mood } from '~/types/api'
-import { CRAMP_SEVERITY_LABELS, CRAMP_TYPE_LABELS, CRAMP_TYPE_ORDER, FIELD_LABELS, FIELD_ORDER, FLOW_LABELS, FLOW_ORDER, LH_LABELS, LH_NOTES, LH_ORDER, MOOD_EMOJI, MOOD_LABELS, MOOD_ORDER, MUCUS_LABELS, MUCUS_ORDER } from '~/utils/labels'
+import type { CervicalMucus, CrampType, DailyLog, FlowIntensity, LogPatch, Mood } from '~/types/api'
+import { CRAMP_SEVERITY_LABELS, CRAMP_TYPE_LABELS, CRAMP_TYPE_ORDER, FIELD_LABELS, FIELD_ORDER, FLOW_LABELS, FLOW_ORDER, MOOD_EMOJI, MOOD_LABELS, MOOD_ORDER, MUCUS_LABELS, MUCUS_ORDER, formatLhValue, lhBand } from '~/utils/labels'
 import { fieldValue } from '~/utils/fieldValue'
 import { formatTemp } from '~/utils/format'
 import { composeBbt, decomposeBbt } from '~/utils/bbt'
@@ -18,7 +18,11 @@ const touched = ref<Set<number>>(new Set())
 // mezőállapot
 const whole = ref(36); const tenths = ref(3); const hundredths = ref(6); const tempSet = ref(false)
 const mucus = ref<CervicalMucus | null>(null)
-const lh = ref<LhTest | null>(null)
+// Az LH a tesztcsík/kontrollcsík aránya 0–1 között. A háromértékű besorolást a szerver
+// vezeti vissza belőle — a kliens csak az arányt küldi.
+const lh = ref<number | null>(null)
+const LH_STEP = 0.05
+const lhBandOf = computed(() => lhBand(lh.value ?? 0))
 const crampType = ref<CrampType | null>(null)
 const crampSeverity = ref<number | null>(null)
 const flow = ref<FlowIntensity | null>(null)
@@ -62,7 +66,7 @@ watch(() => store.sheetOpen, async (open) => {
     whole.value = d.whole; tenths.value = d.tenths; hundredths.value = d.hundredths
   } else { whole.value = 36; tenths.value = 3; hundredths.value = 6 }
   mucus.value = log.cervicalMucus
-  lh.value = log.lhTest
+  lh.value = log.lhValue
   crampType.value = log.crampType
   crampSeverity.value = log.crampSeverity
   flow.value = log.flowIntensity
@@ -79,7 +83,7 @@ function buildPatch(only?: number): LogPatch {
   const include = (i: number) => (only === undefined ? touched.value.has(i) : only === i)
   if (include(0)) patch.bbtCelsius = tempSet.value ? bbtValue.value : null
   if (include(1)) patch.cervicalMucus = mucus.value
-  if (include(2)) patch.lhTest = lh.value
+  if (include(2)) patch.lhValue = lh.value
   if (include(3)) { patch.crampType = crampType.value; patch.crampSeverity = crampSeverity.value }
   if (include(4)) { patch.flowIntensity = flow.value; patch.periodStart = periodStart.value }
   if (include(6)) patch.moods = moods.value
@@ -120,12 +124,12 @@ const summaryRows = computed(() => {
   const preview: DailyLog = {
     ...(before.value ?? {
       date: store.sheetDate ?? '', bbtOutlier: false, updatedAt: null, updatedBy: null,
-      bbtCelsius: null, cervicalMucus: null, lhTest: null, crampType: null,
+      bbtCelsius: null, cervicalMucus: null, lhTest: null, lhValue: null, crampType: null,
       crampSeverity: null, flowIntensity: null, periodStart: false, moods: [], intercourse: [],
     }),
     bbtCelsius: tempSet.value ? bbtValue.value : null,
     cervicalMucus: mucus.value,
-    lhTest: lh.value,
+    lhValue: lh.value,
     crampType: crampType.value,
     crampSeverity: crampSeverity.value,
     flowIntensity: flow.value,
@@ -190,15 +194,30 @@ const summaryRows = computed(() => {
           <!-- 2: LH -->
           <div v-else-if="step === 2">
             <div class="step-title">LH-teszt</div>
-            <div class="step-sub" v-if="store.overview?.yesterdayLog?.lhTest">
-              Tegnap: {{ LH_LABELS[store.overview.yesterdayLog.lhTest].toLowerCase() }}</div>
-            <div class="lh-col">
-              <button v-for="key in LH_ORDER" :key="key" class="lh-opt" :class="{ active: lh === key }"
-                @click="lh = key; touch(2)">
-                <span class="lh-label">{{ LH_LABELS[key] }}</span>
-                <span class="lh-note">{{ LH_NOTES[key] }}</span>
-              </button>
+            <div class="step-sub">A tesztcsík sötétsége a kontrollcsíkhoz képest.
+              <template v-if="formatLhValue(store.overview?.yesterdayLog?.lhValue)">
+                Tegnap: {{ formatLhValue(store.overview!.yesterdayLog!.lhValue) }}</template>
             </div>
+            <div class="lh-strip" :class="{ empty: lh === null }">
+              <div class="lh-line control" />
+              <div class="lh-line test" :style="{ opacity: Math.max(lh ?? 0, 0.04) }" />
+              <div class="lh-strip-caps"><span>kontroll</span><span>teszt</span></div>
+            </div>
+            <div class="lh-readout">
+              <template v-if="lh === null">
+                <span class="lh-band idle">Nincs rögzítve</span>
+              </template>
+              <template v-else>
+                <span class="lh-value">{{ lh.toFixed(2).replace('.', ',') }}</span>
+                <span class="lh-band">{{ lhBandOf.label }}</span>
+              </template>
+            </div>
+            <div class="lh-note-line">{{ lh === null ? 'Húzd a csúszkát a leolvasott arányhoz.' : lhBandOf.note }}</div>
+            <input class="lh-range" type="range" min="0" max="1" :step="LH_STEP"
+              :value="lh ?? 0" aria-label="LH tesztcsík aránya"
+              @input="lh = Number(($event.target as HTMLInputElement).value); touch(2)">
+            <div class="lh-scale"><span>0,00</span><span>0,50</span><span>1,00</span></div>
+            <button v-if="lh !== null" class="lh-clear" @click="lh = null; touch(2)">Nem teszteltem</button>
           </div>
 
           <!-- 3: Görcs -->
@@ -353,6 +372,32 @@ const summaryRows = computed(() => {
 .mucus-swatch.active { box-shadow: inset 0 0 0 3px var(--plum-ink), 0 0 0 4px rgba(90,92,214,.16); }
 .opt-label { font-size: 11px; font-weight: 600; text-align: center; color: var(--ink-2); width: 100%; }
 .opt-label.active { color: var(--primary); }
+.lh-strip {
+  margin-top: 20px; height: 74px; border-radius: 14px; background: var(--surface);
+  display: flex; align-items: center; justify-content: center; gap: 34px; position: relative;
+}
+.lh-strip.empty { opacity: .55; }
+.lh-line { width: 9px; height: 40px; border-radius: 3px; background: var(--plum-ink); }
+.lh-line.test { background: var(--primary); }
+.lh-strip-caps {
+  position: absolute; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center;
+  gap: 22px; font-size: 10px; font-weight: 600; color: var(--ink-3);
+}
+.lh-strip-caps span { width: 43px; text-align: center; }
+.lh-readout { display: flex; align-items: baseline; gap: 10px; margin-top: 18px; }
+.lh-value { font-size: 30px; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+.lh-band { font-size: 14px; font-weight: 700; color: var(--primary-hover); }
+.lh-band.idle { font-size: 19px; color: var(--ink-3); }
+.lh-note-line { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; }
+.lh-range { width: 100%; margin-top: 16px; accent-color: var(--primary); }
+.lh-scale {
+  display: flex; justify-content: space-between; font-size: 11px; font-weight: 600;
+  color: var(--ink-3); margin-top: 2px;
+}
+.lh-clear {
+  margin-top: 14px; padding: 10px 14px; border: 0; border-radius: 12px; background: var(--surface);
+  font: 600 13px 'Montserrat', sans-serif; color: var(--ink-2); cursor: pointer;
+}
 .lh-col { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
 .lh-opt {
   padding: 19px 18px; border-radius: 16px; background: var(--surface); border: 0; cursor: pointer;

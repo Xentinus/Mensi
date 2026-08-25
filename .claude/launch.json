@@ -3,7 +3,12 @@
   "configurations": [
     {
       "name": "mensi-client",
-      "url": "http://localhost:3000",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "cwd": "mensi.client",
       "port": 3000
     }
   ]

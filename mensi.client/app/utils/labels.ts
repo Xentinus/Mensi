@@ -10,6 +10,25 @@ export const LH_NOTES: Record<LhTest, string> = {
   negative: 'halvány vagy nincs csík', positive: 'a tesztcsík látható', peak: 'a legsötétebb eddig',
 }
 
+/** A 0–1 arány négy sávja. A tárolt enum három értékű (a szerver ugyanezeken a küszöbökön
+ *  vezeti vissza), de a kijelzés az „emelkedő” tartományt külön nevezi — pont ez az a sáv,
+ *  amit a régi három gomb egyetlen „negatív”-ba mosott össze. */
+export const LH_BANDS = [
+  { min: 0.95, label: 'Csúcs', note: 'a tesztcsík legalább olyan sötét, mint a kontroll' },
+  { min: 0.65, label: 'Pozitív', note: 'az LH-lökés zajlik' },
+  { min: 0.35, label: 'Emelkedő', note: 'a csík látszik, de halványabb a kontrollnál' },
+  { min: 0, label: 'Negatív', note: 'alig vagy egyáltalán nem látszik csík' },
+] as const
+
+export function lhBand(value: number) {
+  return LH_BANDS.find(b => value >= b.min) ?? LH_BANDS[LH_BANDS.length - 1]!
+}
+
+export function formatLhValue(value: number | null | undefined): string | null {
+  if (value === null || value === undefined) return null
+  return `${value.toFixed(2).replace('.', ',')} · ${lhBand(value).label.toLowerCase()}`
+}
+
 export const CRAMP_TYPE_LABELS: Record<CrampType, string> = { abdomen: 'Alhas', back: 'Derék', breast: 'Mell' }
 export const CRAMP_TYPE_ORDER: CrampType[] = ['abdomen', 'back', 'breast']
 export const CRAMP_SEVERITY_LABELS = ['Nincs', 'Enyhe', 'Közepes', 'Erős'] as const

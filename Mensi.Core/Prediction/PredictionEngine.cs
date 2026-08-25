@@ -5,7 +5,8 @@ namespace Mensi.Core.Prediction;
 public sealed record DailyLogSnapshot(
     DateOnly Date, decimal? Bbt, CervicalMucus? Mucus, LhTest? Lh,
     CrampType? CrampType, short? CrampSeverity, FlowIntensity? Flow,
-    bool PeriodStart, int IntercourseCount, int UnprotectedCount);
+    bool PeriodStart, int IntercourseCount, int UnprotectedCount,
+    decimal? LhValue = null);
 
 public sealed record EngineInput(
     IReadOnlyList<ClosedCycleStat> ClosedCycles,
@@ -22,7 +23,8 @@ public sealed record CyclePrediction(
     DateOnly FertileFrom, DateOnly FertileTo,
     ConfidenceLevel Confidence, double Chance, TimingLabel Timing,
     string? WhatIfHint, string? PregnancyHint, string? MeasurementHint, string Headline,
-    PhaseInfo Phase, BbtAnalysis Bbt, Posterior OvulationPosterior, int MenstruationEndDay)
+    PhaseInfo Phase, BbtAnalysis Bbt, Posterior OvulationPosterior, int MenstruationEndDay,
+    IReadOnlyList<ProjectedCycle> Future)
 {
     public DayCategory Categorize(DateOnly date)
     {
@@ -33,13 +35,27 @@ public sealed record CyclePrediction(
         if (date >= FertileFrom && date < OvulationFrom) return DayCategory.Fertile;
         if (date >= PeriodFrom && date <= PeriodTo) return DayCategory.PredictedPeriod;
         if (date > OvulationTo && date < PeriodFrom) return DayCategory.Luteal;
-        if (date > PeriodTo) return DayCategory.Unknown;
+        // A nyitott ciklus becsült menstruációja után az előrevetített ciklusok viszik tovább
+        // a naptárat — e nélkül minden jövőbeli hónap üresen maradt.
+        if (date > PeriodTo) return ProjectedFor(date)?.Categorize(date) ?? DayCategory.Unknown;
         return DayCategory.Follicular;
     }
+
+    public ProjectedCycle? ProjectedFor(DateOnly date) =>
+        Future.FirstOrDefault(c => date >= c.Start && date <= c.End);
+
+    /// <summary>A ciklusnap az előrevetített ciklusokban is értelmezett — a naptár így a
+    /// jövőbeli hónapokban sem veszíti el a számozást.</summary>
+    public int? ProjectedCycleDay(DateOnly date) =>
+        ProjectedFor(date) is ProjectedCycle c ? date.DayNumber - c.Start.DayNumber + 1 : null;
 }
 
 public static class PredictionEngine
 {
+    /// <summary>A follikuláris szórásnégyzet alsó korlátja: a ciklus- és a luteális szórás
+    /// külön becsült, így a különbségük elvben nullára (vagy az alá) eshet.</summary>
+    public const double MinFollicularVar = 1.0;
+
     public static CyclePrediction? Evaluate(EngineInput input)
     {
         var stats = CycleStats.Compute(input.ClosedCycles);
@@ -61,11 +77,17 @@ public static class PredictionEngine
         var bbt = BbtAnalyzer.Analyze(BuildBbtDays(input.CurrentCycleLogs, start, cycleDay));
         var observations = input.CurrentCycleLogs
             .Select(l => new ObservedDay(
-                l.Date.DayNumber - start.DayNumber + 1, l.Mucus, l.Lh, l.CrampType, l.CrampSeverity))
+                l.Date.DayNumber - start.DayNumber + 1, l.Mucus, l.Lh, l.CrampType, l.CrampSeverity,
+                l.LhValue))
             .ToList();
 
+        // Az ovulációs nap = ciklushossz − luteális hossz, tehát a follikuláris szakasz
+        // szórásnégyzete cycleVar − lutealVar. Korábban itt összeadás állt, a luteális szórást
+        // viszont a PeriodDistribution konvolúciója amúgy is visszateszi — a menstruáció-sáv
+        // így cycleVar + 2·lutealVar szélességű lett, vagyis szisztematikusan túl széles.
+        var follicularVar = Math.Max(cycleVar - lutealVar, MinFollicularVar);
         var posterior = OvulationPosterior.Compute(
-            cycleMean - lutealMean, cycleVar + lutealVar, observations, bbt);
+            cycleMean - lutealMean, follicularVar, observations, bbt);
 
         // Feltétel NÉLKÜLI menstruáció-eloszlás: a terhesség-jelzés „késik-e" kérdéséhez
         // az kell, hova esett volna a menstruáció a naptári modell szerint.
@@ -97,15 +119,21 @@ public static class PredictionEngine
         var confidence = ConfidenceRule.From(ovuToDay - ovuFromDay, stats.ClosedCount);
         var pregnancy = PregnancyHint(input, bbt, D(unconditionedPerToDay), lutealMean, start, today);
 
-        // Ha a sáv széles ÉS a jelenlegi ciklusban nincs egyetlen biomarker sem, a szűkítés
-        // útja nem több naptár-adat, hanem mérés — ezt jelezzük a felhasználónak.
+        // Ha a sáv széles, a szűkítés útja nem több naptár-adat, hanem mérés. Két külön eset:
+        // nincs biomarker, vagy van LH-sorozat, de végig lapos — utóbbi nem lokalizál semmit.
+        var lhValues = observations
+            .Select(o => LhScale.Resolve(o.LhValue, o.Lh))
+            .Where(v => v is not null).Select(v => (double)v!.Value).ToList();
         string? measurementHint = null;
-        if (confidence == ConfidenceLevel.Low
-            && bbt.ValidCount == 0
-            && !observations.Any(o => o.Lh is not null || o.Mucus is not null))
+        if (confidence == ConfidenceLevel.Low && bbt.ValidCount == 0)
         {
-            measurementHint = "A sáv szűkítéséhez rögzíts reggeli testhőt vagy LH-tesztet — "
-                + "egy LH-csúcs napokra pontosítja a becslést.";
+            if (lhValues.Count == 0 && !observations.Any(o => o.Mucus is not null))
+                measurementHint = "A sáv szűkítéséhez rögzíts reggeli testhőt vagy LH-tesztet — "
+                    + "egy LH-csúcs napokra pontosítja a becslést.";
+            else if (lhValues.Count >= 3 && lhValues.Max() <= LhLikelihood.MinAmplitude)
+                measurementHint = "Az eddigi LH-csíkok végig halványak, így nem jelölnek ki napot. "
+                    + "Tesztelj naponta a felfutás körül, és rögzítsd a csík arányát — a becslés "
+                    + "az emelkedő értékekből szűkül.";
         }
 
         var prediction = new CyclePrediction(
@@ -115,7 +143,10 @@ public static class PredictionEngine
             D(fertileFromDay), D(ovuToDay),
             confidence, chance, WilcoxKernel.Label(chance),
             whatIf, pregnancy, measurementHint, "",
-            PhaseOf(DayCategory.Unknown, 1, 1, 0), bbt, posterior, mensEnd);
+            PhaseOf(DayCategory.Unknown, 1, 1, 0), bbt, posterior, mensEnd,
+            CycleProjector.Project(
+                D(perP50Day), cycleMean, lutealMean,
+                mensEnd > 1 ? mensEnd : CycleProjector.DefaultMenstruationDays));
 
         var phase = BuildPhase(prediction, today);
         return prediction with { Phase = phase, Headline = Headline(prediction, phase, today) };

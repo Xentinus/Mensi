@@ -33,6 +33,69 @@ public class PredictionEngineTests
             Start, logs, today ?? Start.AddDays(13));
     }
 
+    /// <summary>A bejelentett eset: 26–42 nap között szóró ciklusok, a 34. napon, vérzés nélkül.
+    /// A naptár-modell itt jogosan széles — a szűkítést az LH-arányoknak kell hozniuk.</summary>
+    private static EngineInput Irregular(IReadOnlyList<(int Day, decimal Lh)> lhReadings)
+    {
+        int[] lengths = [28, 30, 35, 26, 38, 40, 29, 42];
+        var closed = new List<ClosedCycleStat>();
+        var cursor = Start.AddDays(-lengths.Sum());
+        foreach (var len in lengths)
+        {
+            closed.Add(new ClosedCycleStat(cursor, len, null, false, null));
+            cursor = cursor.AddDays(len);
+        }
+
+        var byDay = lhReadings.ToDictionary(r => r.Day, r => r.Lh);
+        var logs = Enumerable.Range(1, 34).Select(d => new DailyLogSnapshot(
+            Start.AddDays(d - 1), Bbt: null, Mucus: null, Lh: null,
+            CrampType: null, CrampSeverity: null,
+            Flow: d <= 4 ? FlowIntensity.Medium : null,
+            PeriodStart: d == 1, IntercourseCount: 0, UnprotectedCount: 0,
+            LhValue: byDay.TryGetValue(d, out var v) ? v : null)).ToList();
+
+        return new EngineInput(closed, Start, logs, Start.AddDays(33));
+    }
+
+    private static int Width(DateOnly from, DateOnly to) => to.DayNumber - from.DayNumber + 1;
+
+    [Fact]
+    public void Irregular_cycles_stay_honest_but_lh_readings_narrow_the_bands()
+    {
+        var bare = PredictionEngine.Evaluate(Irregular([]))!;
+        // A luteális szórás korábban kétszer került bele (prior + konvolúció) — a sáv
+        // ettől szisztematikusan szélesebb volt, mint amit a ciklushossz-szórás indokol.
+        Assert.InRange(Width(bare.PeriodFrom, bare.PeriodTo), 1, 10);
+        Assert.Equal(ConfidenceLevel.Low, bare.Confidence);
+        Assert.NotNull(bare.MeasurementHint);
+
+        // Ugyanaz a ciklus, csak felvitt csíkarányokkal: a 22. napi maximum köré húzódik minden.
+        var measured = PredictionEngine.Evaluate(Irregular(
+            [(16, 0.10m), (18, 0.12m), (20, 0.18m), (22, 0.45m), (23, 0.30m),
+             (25, 0.12m), (27, 0.10m), (30, 0.10m), (33, 0.10m)]))!;
+
+        Assert.True(Width(measured.PeriodFrom, measured.PeriodTo)
+            < Width(bare.PeriodFrom, bare.PeriodTo));
+        Assert.True(Width(measured.OvulationFrom, measured.OvulationTo)
+            < Width(bare.OvulationFrom, bare.OvulationTo));
+        Assert.InRange(measured.OvulationP50.DayNumber - Start.DayNumber + 1, 21, 25);
+        Assert.Null(measured.MeasurementHint); // van biomarker, nem a mérést kell sürgetni
+    }
+
+    [Fact]
+    public void Future_cycles_are_projected_beyond_the_predicted_period()
+    {
+        var p = PredictionEngine.Evaluate(Input())!;
+        Assert.NotEmpty(p.Future);
+        Assert.Equal(p.PeriodP50, p.Future[0].Start);
+
+        var wellAhead = p.PeriodTo.AddDays(120);
+        Assert.NotEqual(DayCategory.Unknown, p.Categorize(wellAhead));
+        Assert.NotNull(p.ProjectedCycleDay(wellAhead));
+        // A nyitott ciklus sávján belül még a posterior dönt, nem az előrevetítés.
+        Assert.Null(p.ProjectedFor(p.OvulationP50));
+    }
+
     [Fact]
     public void No_closed_cycles_yields_null() =>
         Assert.Null(PredictionEngine.Evaluate(new EngineInput([], Start, [], Start)));

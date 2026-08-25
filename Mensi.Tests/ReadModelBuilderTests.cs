@@ -115,7 +115,24 @@ public class ReadModelBuilderTests
         Assert.Contains(c.Days, d => d.Category is DayCategory.Ovulation or DayCategory.Fertile);
         // A backfill-horizont (5 év) korábbi, mint az első bejegyzés → az nyer.
         Assert.Equal("2021-08", c.Range.FirstMonth);
-        Assert.Equal("2026-09", c.Range.LastMonth);
+        // Előre az előrevetített ciklusok horizontjáig lehet lapozni.
+        Assert.Equal("2027-08", c.Range.LastMonth);
+        Assert.DoesNotContain(c.Days, d => d.IsProjected);
+    }
+
+    [Fact]
+    public void Calendar_projects_future_cycles()
+    {
+        // Fél évvel előre: a nyitott ciklus becsült menstruációján jóval túl vagyunk,
+        // korábban ez a hónap teljesen üresen (Unknown) maradt.
+        var c = ReadModelBuilder.BuildCalendar(Fixture(), 2027, 2);
+        Assert.All(c.Days, d => Assert.True(d.IsProjected));
+        Assert.Contains(c.Days, d => d.Category == DayCategory.PredictedPeriod);
+        Assert.Contains(c.Days, d => d.Category == DayCategory.Ovulation);
+        Assert.Contains(c.Days, d => d.Category == DayCategory.Fertile);
+        Assert.DoesNotContain(c.Days, d => d.Category == DayCategory.Unknown);
+        // A ciklusnap-számozás is folytatódik, nem a nyitott ciklus 190. napjaként.
+        Assert.All(c.Days, d => Assert.InRange(d.CycleDay ?? 0, 1, 60));
     }
 
     [Fact]
