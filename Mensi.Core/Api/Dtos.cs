@@ -23,7 +23,7 @@ public sealed record TimingDto(TimingLabel Label, double ChancePercent, int Days
 public sealed record OverviewDto(
     DateOnly Today, bool IsEmpty, CycleInfoDto? Cycle, PhaseDto? Phase, string? Headline,
     WindowDto? OvulationWindow, WindowDto? NextPeriodWindow, ConfidenceLevel? Confidence,
-    string? PregnancyHint, StripDto? Strip, TimingDto? Timing,
+    string? PregnancyHint, string? MeasurementHint, StripDto? Strip, TimingDto? Timing,
     DailyLogDto? TodayLog, DailyLogDto? YesterdayLog);
 
 public sealed record TimingSummaryDto(TimingLabel Label, double ChancePercent);

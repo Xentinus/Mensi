@@ -21,7 +21,7 @@ public sealed record CyclePrediction(
     DateOnly PeriodFrom, DateOnly PeriodP50, DateOnly PeriodTo,
     DateOnly FertileFrom, DateOnly FertileTo,
     ConfidenceLevel Confidence, double Chance, TimingLabel Timing,
-    string? WhatIfHint, string? PregnancyHint, string Headline,
+    string? WhatIfHint, string? PregnancyHint, string? MeasurementHint, string Headline,
     PhaseInfo Phase, BbtAnalysis Bbt, Posterior OvulationPosterior, int MenstruationEndDay)
 {
     public DayCategory Categorize(DateOnly date)
@@ -97,13 +97,25 @@ public static class PredictionEngine
         var confidence = ConfidenceRule.From(ovuToDay - ovuFromDay, stats.ClosedCount);
         var pregnancy = PregnancyHint(input, bbt, D(unconditionedPerToDay), lutealMean, start, today);
 
+        // Ha a sáv széles ÉS a jelenlegi ciklusban nincs egyetlen biomarker sem, a szűkítés
+        // útja nem több naptár-adat, hanem mérés — ezt jelezzük a felhasználónak.
+        string? measurementHint = null;
+        if (confidence == ConfidenceLevel.Low
+            && bbt.ValidCount == 0
+            && !observations.Any(o => o.Lh is not null || o.Mucus is not null))
+        {
+            measurementHint = "A sáv szűkítéséhez rögzíts reggeli testhőt vagy LH-tesztet — "
+                + "egy LH-csúcs napokra pontosítja a becslést.";
+        }
+
         var prediction = new CyclePrediction(
             start, cycleDay,
             D(ovuFromDay), D(ovuP50Day), D(ovuToDay),
             D(perFromDay), D(perP50Day), D(perToDay),
             D(fertileFromDay), D(ovuToDay),
             confidence, chance, WilcoxKernel.Label(chance),
-            whatIf, pregnancy, "", PhaseOf(DayCategory.Unknown, 1, 1, 0), bbt, posterior, mensEnd);
+            whatIf, pregnancy, measurementHint, "",
+            PhaseOf(DayCategory.Unknown, 1, 1, 0), bbt, posterior, mensEnd);
 
         var phase = BuildPhase(prediction, today);
         return prediction with { Phase = phase, Headline = Headline(prediction, phase, today) };

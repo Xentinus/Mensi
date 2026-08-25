@@ -57,6 +57,7 @@ export interface Overview {
   nextPeriodWindow: DateWindow | null
   confidence: ConfidenceLevel | null
   pregnancyHint: string | null
+  measurementHint: string | null
   strip: { from: string; to: string; days: StripDay[] } | null
   timing: Timing | null
   todayLog: DailyLog | null

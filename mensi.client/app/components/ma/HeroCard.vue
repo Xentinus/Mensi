@@ -43,6 +43,7 @@ const dayNum = (day: StripDay) => new Date(`${day.date}T00:00:00`).getDate()
             :class="{ done: i <= o.phase!.elapsedDays }" />
         </div>
       </div>
+      <div v-if="o.measurementHint" class="measure-hint">{{ o.measurementHint }}</div>
     </div>
 
     <div class="hero-bottom">
@@ -92,6 +93,10 @@ const dayNum = (day: StripDay) => new Date(`${day.date}T00:00:00`).getDate()
 .phase-dot { flex: 1; height: 7px; border-radius: 99px; background: #fff; }
 .phase-dot.done { background: rgba(255,255,255,.35); }
 .hero-bottom { background: #fff; padding: 18px; }
+.measure-hint {
+  margin-top: 14px; background: rgba(255, 255, 255, .14); border-radius: 14px;
+  padding: 13px 14px; font-size: 12.5px; color: #eceeff; line-height: 1.55;
+}
 .strip-head { display: flex; align-items: center; }
 .strip-range { font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
 .strip-conf { margin-left: auto; color: var(--primary-hover); background: var(--tint); font-weight: 700; }

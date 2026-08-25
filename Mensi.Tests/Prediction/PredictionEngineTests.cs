@@ -106,6 +106,29 @@ public class PredictionEngineTests
     }
 
     [Fact]
+    public void Measurement_hint_appears_on_low_confidence_without_biomarkers()
+    {
+        // szabálytalan történet (26/40/33) + nulla biomarker → széles sáv → mérési javaslat
+        var logs = new List<DailyLogSnapshot>
+        {
+            new(Start, null, null, null, null, null, FlowIntensity.Medium, true, 0, 0),
+        };
+        var input = new EngineInput(
+            [Closed(-99, 26, null), Closed(-73, 40, null), Closed(-33, 33, null)],
+            Start, logs, Start.AddDays(9));
+        var p = PredictionEngine.Evaluate(input)!;
+        Assert.Equal(ConfidenceLevel.Low, p.Confidence);
+        Assert.NotNull(p.MeasurementHint);
+    }
+
+    [Fact]
+    public void Measurement_hint_is_absent_when_biomarkers_exist()
+    {
+        var p = PredictionEngine.Evaluate(Input())!; // a fixture LH-csúcsot és BBT-t is tartalmaz
+        Assert.Null(p.MeasurementHint);
+    }
+
+    [Fact]
     public void No_pregnancy_hint_mid_cycle() =>
         Assert.Null(PredictionEngine.Evaluate(Input())!.PregnancyHint);
 

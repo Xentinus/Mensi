@@ -140,7 +140,7 @@ public static class ReadModelBuilder
         var prediction = Predict(input);
         if (prediction is null)
             return new OverviewDto(input.Today, true, null, null, null, null, null, null,
-                null, null, null, todayLog, yesterdayLog);
+                null, null, null, null, todayLog, yesterdayLog);
 
         var monday = input.Today.AddDays(-(((int)input.Today.DayOfWeek + 6) % 7));
         var stripFrom = monday.AddDays(-14);
@@ -170,7 +170,7 @@ public static class ReadModelBuilder
             prediction.Headline,
             new WindowDto(prediction.OvulationFrom, prediction.OvulationTo),
             new WindowDto(prediction.PeriodFrom, prediction.PeriodTo),
-            prediction.Confidence, prediction.PregnancyHint,
+            prediction.Confidence, prediction.PregnancyHint, prediction.MeasurementHint,
             new StripDto(stripFrom, stripFrom.AddDays(34), stripDays),
             timing, todayLog, yesterdayLog);
     }
