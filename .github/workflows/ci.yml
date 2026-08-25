@@ -1,0 +1,114 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  # A master-re való push a deploy workflowt indítja, az pedig ezt hívja meg a build előtt —
+  # tehát a közvetlen push sem deployol teszt nélkül.
+  workflow_call:
+    inputs:
+      skip_image_build:
+        description: "Az image build job kihagyása (a hívó maga buildel és pushol)"
+        type: boolean
+        default: false
+
+jobs:
+  test:
+    name: Backend tesztek
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      # Az API tesztek Testcontainersszel indítanak Postgrest (smallint[] és jsonb oszlopok,
+      # az InMemory provider nem elég). A runneren fut Docker, nem kell service container.
+      - name: Teszt futtatás
+        run: dotnet test Mensi.Tests/Mensi.Tests.csproj --nologo
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mensi.client/package-lock.json
+
+      - name: Csomagok
+        working-directory: mensi.client
+        run: npm ci
+
+      # High és critical szinten bukik; a moderate/low nem állítja meg a PR-t — a találatok
+      # zöme devDependency, ami nem kerül az image-be.
+      - name: npm audit
+        working-directory: mensi.client
+        run: npm audit --audit-level=high
+
+      - name: Típusellenőrzés
+        working-directory: mensi.client
+        run: npm run type-check
+
+      - name: Teszt
+        working-directory: mensi.client
+        run: npm test
+
+  nuget-audit:
+    name: NuGet sebezhetőségek
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      # A `--vulnerable` találat esetén is 0-val tér vissza, ezért a kimenetet nézzük.
+      # SSH.NET: GHSA-q939-rpr3-3284 elfogadva — test-only függőség, minden kiadott verzió
+      # érintett (az indoklás a Mensi.Tests csproj NU1903-némításánál).
+      - name: Sebezhető csomagok
+        run: |
+          for project in Mensi.Core Mensi.Server Mensi.Tests; do
+            dotnet list "$project/$project.csproj" package --vulnerable --include-transitive | tee -a audit.txt
+          done
+          if grep -E '^ +> ' audit.txt | grep -v 'SSH\.NET'; then
+            echo "::error::Sebezhető NuGet csomag a fenti listában."
+            exit 1
+          fi
+
+  build:
+    name: Image build
+    # Deployból hívva a build-and-push job fordít — kétszer buildelni felesleges.
+    if: ${{ !inputs.skip_image_build }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Image build (push nélkül)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Mensi.Server/Dockerfile
+          push: false
+          # A Trivy a helyi daemonból olvassa az image-et.
+          load: true
+          tags: mensi:ci
+          cache-from: type=gha,scope=app
+          cache-to: type=gha,mode=max,scope=app
+
+      # HIGH/CRITICAL szinten bukik, de csak javítható találaton (ignore-unfixed): a base
+      # image még javítatlan Debian CVE-ivel itt nem lehet mit tenni.
+      - name: Trivy szkennelés
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: mensi:ci
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"

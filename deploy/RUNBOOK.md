@@ -32,22 +32,35 @@
 - A team domain (`https://<team>.cloudflareaccess.com`) a `.env` fájl `CF_ACCESS_TEAM_DOMAIN`
   kulcsába kerül.
 
-## 4. Első indítás
+## 4. Automatikus deploy (GitHub Actions)
 
-- Repó klónozása a szerverre, majd a `.env` kitöltése a `.env.example` alapján (Postgres jelszó,
-  a fenti két Cloudflare Access érték, illetve igény szerint a retention/időzóna felülbírálása).
-- Build és indítás:
-  ```bash
-  docker compose -f docker-compose.yml build && docker compose -f docker-compose.yml up -d
-  ```
-- Az adatbázis-migráció a háttérben, automatikusan lefut a Mensi.Server indulásakor. Ellenőrzés:
-  ```bash
-  docker compose ps
-  curl -s http://127.0.0.1:8100/health
-  ```
-  Elvárt eredmény: mindkét szolgáltatás `healthy`, a `curl` válasza `OK`.
-- Böngészőből a `https://mensi.<domain>` cím megnyitása → Cloudflare Access login → az
-  alkalmazás betöltődik.
+Master-re pusholáskor a `.github/workflows/deploy.yml` fut (a PortfolioCMS mintája):
+CI (backend + frontend tesztek, auditok) → image build+push a GHCR-be
+(`ghcr.io/xentinus/mensi:latest` + `sha-<commit>`) → SSH-deploy a VPS-re
+(`/opt/mensi`: compose+szkriptek másolása, `.env` írása a secretekből, pull,
+migráció előtti dump, `up -d`, smoke-teszt). PR-oknál csak a CI fut, Trivy
+image-szkenneléssel.
+
+**Szükséges GitHub repository secretek** (Settings → Secrets and variables → Actions):
+
+| Secret | Érték |
+|---|---|
+| `SSH_HOST`, `SSH_USER`, `SSH_KEY`, `SSH_PORT` | a VPS SSH elérése (mint a PortfolioCMS-nél) |
+| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | pl. `mensi` / `mensi` / erős jelszó |
+| `CF_ACCESS_TEAM_DOMAIN` | `https://<team>.cloudflareaccess.com` |
+| `CF_ACCESS_AUD` | a Mensi Access alkalmazás AUD tagje (3. szakasz) |
+| `GHCR_USER`, `GHCR_TOKEN` | GHCR pull a VPS-en (read:packages PAT) |
+| `AUDIT_RETENTION_DAYS`, `DISPLAY_TIMEZONE`, `BACKUP_RETENTION_DAYS` | opcionális (365 / Europe/Budapest / 14) |
+
+Az első deploy magától felhúzza a `/opt/mensi` könyvtárat és az üres adatbázist — kézi
+első indítás nem kell. Ellenőrzés a szerveren:
+```bash
+cd /opt/mensi && docker compose -f docker-compose.yml ps
+curl -s http://127.0.0.1:8100/health
+```
+Böngészőből a `https://mensi.<domain>` cím → Cloudflare Access login → az alkalmazás
+betöltődik. Visszalépés: az előző image referencia a `.env.previous`-ban, a migráció
+előtti dump a `backups/predeploy-<sha>.sql.gz`-ben (visszaállítás: `deploy/restore.sh`).
 
 ### 4.1 Lokális teszt (fejlesztői gépen)
 
@@ -68,13 +81,14 @@ első inicializáláskor rögzíti.
 > **FIGYELEM:** a szerveren SOHA ne fusson sima `docker compose up -d` (az override
 > betöltődne és publikálná a db portot); mindig `docker compose -f docker-compose.yml up -d`.
 
-- Új verzió kiadása a szerveren:
+- Normál út: **push a master-re** → a deploy workflow mindent elvégez (4. szakasz).
+- Kézi frissítés (ha a CI nem elérhető): a `.env`-ben az `APP_IMAGE` átírása a kívánt
+  `ghcr.io/xentinus/mensi:sha-<commit>` tagre, majd
   ```bash
-  git pull && docker compose -f docker-compose.yml build && docker compose -f docker-compose.yml up -d
+  docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml up -d
   ```
-- A `docker compose up -d` csak az app konténert cseréli újra (az image hash változott), a
-  `db` szolgáltatást és a `pgdata` volument nem érinti; a migráció a frissített kód indulásakor
-  fut le automatikusan.
+- A frissítés csak az app konténert cseréli, a `db`-t és a `pgdata` volument nem érinti;
+  a migráció az új kód indulásakor automatikusan lefut.
 
 ## 6. Mentés és visszaállítás
 

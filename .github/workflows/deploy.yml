@@ -1,0 +1,130 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  # Teszt és típusellenőrzés a build előtt: enélkül egy közvetlen master-re push tesztek
+  # futtatása nélkül deployolt.
+  ci:
+    uses: ./.github/workflows/ci.yml
+    with:
+      skip_image_build: true
+
+  build-and-push:
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Image referencia (kisbetűs owner)
+        id: img
+        run: echo "ref=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/mensi" >> "$GITHUB_OUTPUT"
+
+      - name: GHCR bejelentkezés
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build és push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Mensi.Server/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.img.outputs.ref }}:latest
+            ${{ steps.img.outputs.ref }}:sha-${{ github.sha }}
+          cache-from: type=gha,scope=app
+          cache-to: type=gha,mode=max,scope=app
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kisbetűs image ref
+        id: img
+        run: |
+          echo "app_image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/mensi:sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          # A deploy előtti dump fájlnevébe kerül; a hoszton bejelentkezési shell fut,
+          # bashizmus (${VAR:0:12}) nem maradhat a szkriptben.
+          echo "short_sha=${GITHUB_SHA:0:12}" >> "$GITHUB_OUTPUT"
+
+      - name: Compose fájl és üzemeltetési szkriptek másolása a VPS-re
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose.yml,deploy/smoke-test.sh,deploy/backup.sh,deploy/restore.sh"
+          target: /opt/mensi
+
+      - name: Deploy SSH-n
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DEPLOY_SHA: ${{ steps.img.outputs.short_sha }}
+          APP_IMAGE: ${{ steps.img.outputs.app_image }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          CF_ACCESS_TEAM_DOMAIN: ${{ secrets.CF_ACCESS_TEAM_DOMAIN }}
+          CF_ACCESS_AUD: ${{ secrets.CF_ACCESS_AUD }}
+          AUDIT_RETENTION_DAYS: ${{ secrets.AUDIT_RETENTION_DAYS }}
+          DISPLAY_TIMEZONE: ${{ secrets.DISPLAY_TIMEZONE }}
+          BACKUP_RETENTION_DAYS: ${{ secrets.BACKUP_RETENTION_DAYS }}
+          GHCR_USER: ${{ secrets.GHCR_USER }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          envs: DEPLOY_SHA,APP_IMAGE,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD,CF_ACCESS_TEAM_DOMAIN,CF_ACCESS_AUD,AUDIT_RETENTION_DAYS,DISPLAY_TIMEZONE,BACKUP_RETENTION_DAYS,GHCR_USER,GHCR_TOKEN
+          script: |
+            set -e
+            cd /opt/mensi
+            umask 077
+            # A most futó image referencia kimentése, mielőtt a .env felülíródik — ez a
+            # visszalépés kiindulópontja.
+            if [ -f .env ]; then
+              grep -E '^APP_IMAGE=' .env > .env.previous || true
+            fi
+            cat > .env <<EOF
+            APP_IMAGE=${APP_IMAGE}
+            POSTGRES_DB=${POSTGRES_DB}
+            POSTGRES_USER=${POSTGRES_USER}
+            POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            CF_ACCESS_TEAM_DOMAIN=${CF_ACCESS_TEAM_DOMAIN}
+            CF_ACCESS_AUD=${CF_ACCESS_AUD}
+            AUDIT_RETENTION_DAYS=${AUDIT_RETENTION_DAYS:-365}
+            DISPLAY_TIMEZONE=${DISPLAY_TIMEZONE:-Europe/Budapest}
+            BACKUP_RETENTION_DAYS=${BACKUP_RETENTION_DAYS:-14}
+            EOF
+            echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_USER}" --password-stdin
+            docker compose -f docker-compose.yml pull
+            # Visszaállítási pont a séma hozzáérése előtt: a host induláskor migrál, és egy
+            # régebbi image nem tudja lebontani az újabb sémát — rollback dump nélkül nem elég.
+            # A --skip-if-no-db csak az első, üres hoszton engedi tovább.
+            bash deploy/backup.sh --skip-if-no-db "predeploy-${DEPLOY_SHA}"
+            docker compose -f docker-compose.yml up -d
+            # Az up -d a konténerek indulásakor visszatér — a healthre várás és a /health
+            # hívás itt buktatja el a workflowt, ha a host nem áll fel.
+            bash deploy/smoke-test.sh
+            # Csak a hétnél régebbi image-eket takarítjuk: a visszalépéshez a korábbi sha-
+            # tagnek a hoszton is meg kell maradnia.
+            docker image prune -f --filter "until=168h"
