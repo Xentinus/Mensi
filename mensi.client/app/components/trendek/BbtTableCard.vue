@@ -10,7 +10,7 @@ function marks(row: NonNullable<Trends['bbt']>['rows'][number]): string {
   if (row.isOutlier) return 'kiugró'
   const parts: string[] = []
   if (row.marks.cervicalMucus) parts.push(MUCUS_LABELS[row.marks.cervicalMucus].toLowerCase())
-  if (row.marks.lhTest) parts.push(row.marks.lhTest === 'negative' ? 'LH−' : 'LH+')
+  if (row.marks.lhValue !== null) parts.push(`LH ${row.marks.lhValue.toFixed(2).replace('.', ',')}`)
   return parts.join(' · ') || '—'
 }
 </script>

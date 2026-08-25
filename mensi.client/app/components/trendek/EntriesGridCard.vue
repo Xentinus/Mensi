@@ -18,7 +18,17 @@ const gridRows = computed(() => {
   const defs: { label: string; cell: (log: DailyLog | undefined) => Cell }[] = [
     { label: 'Testhő', cell: l => l?.bbtCelsius != null ? { bg: '#dde1ef', fg: 'transparent', txt: '' } : OFF },
     { label: 'Nyák', cell: l => l?.cervicalMucus ? { bg: MUCUS_RAMP[MUCUS_IDX[l.cervicalMucus]]!, fg: '#1e3566', txt: String(MUCUS_IDX[l.cervicalMucus] + 1) } : OFF },
-    { label: 'LH', cell: l => l?.lhTest ? (l.lhTest === 'negative' ? { bg: '#dde1ef', fg: '#464b6b', txt: '–' } : { bg: '#5a5cd6', fg: '#fff', txt: '+' }) : OFF },
+    // Az LH-arány folytonos: a cella háttere a csík sötétségét követi, a szám a 0–1 érték
+    // tizedei — így a 0,10 és a 0,40 nap ránézésre is elválik.
+    { label: 'LH', cell: (l) => {
+      if (l?.lhValue == null) return OFF
+      const strong = l.lhValue >= 0.5
+      return {
+        bg: `rgba(90,92,214,${(0.12 + l.lhValue * 0.85).toFixed(2)})`,
+        fg: strong ? '#fff' : '#2c2d63',
+        txt: String(Math.round(l.lhValue * 10)),
+      }
+    } },
     { label: 'Görcs', cell: l => l?.crampSeverity != null && l.crampSeverity > 0 ? { bg: CRAMP_RAMP[l.crampSeverity]!, fg: '#2c2d63', txt: String(l.crampSeverity) } : OFF },
     { label: 'Folyás', cell: l => l?.flowIntensity && l.flowIntensity !== 'none' ? { bg: FLOW_RAMP[FLOW_IDX[l.flowIntensity]]!, fg: '#26265c', txt: String(FLOW_IDX[l.flowIntensity]) } : OFF },
     { label: 'Együttlét', cell: l => l && l.intercourse.length > 0 ? { bg: '#5a5cd6', fg: '#fff', txt: String(l.intercourse.length) } : OFF },

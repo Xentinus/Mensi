@@ -15,7 +15,7 @@ public sealed class CycleRecomputeService(MensiDbContext db, TimeProvider clock)
         var logs = await db.DailyLogs.AsNoTracking().OrderBy(l => l.Date).ToListAsync(ct);
         var snapshots = logs.Select(l => new DailyLogSnapshot(
             l.Date, l.BbtCelsius, l.CervicalMucus, l.LhTest, l.CrampType, l.CrampSeverity,
-            l.FlowIntensity, l.PeriodStart, 0, 0)).ToList();
+            l.FlowIntensity, l.PeriodStart, 0, 0, l.LhValue)).ToList();
 
         var derived = CycleDeriver.Derive(snapshots);
         var existing = await db.Cycles.ToDictionaryAsync(c => c.StartDate, ct);

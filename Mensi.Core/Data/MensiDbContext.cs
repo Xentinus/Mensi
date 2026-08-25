@@ -26,6 +26,7 @@ public class MensiDbContext(DbContextOptions<MensiDbContext> options) : DbContex
             e.Property(x => x.BbtCelsius).HasColumnName("bbt_celsius").HasColumnType("numeric(4,2)");
             e.Property(x => x.CervicalMucus).HasColumnName("cervical_mucus").HasConversion<short?>();
             e.Property(x => x.LhTest).HasColumnName("lh_test").HasConversion<short?>();
+            e.Property(x => x.LhValue).HasColumnName("lh_value").HasColumnType("numeric(3,2)");
             e.Property(x => x.CrampType).HasColumnName("cramp_type").HasConversion<short?>();
             e.Property(x => x.CrampSeverity).HasColumnName("cramp_severity");
             e.Property(x => x.FlowIntensity).HasColumnName("flow_intensity").HasConversion<short?>();

@@ -6,7 +6,7 @@ public sealed record IntercourseDto(long Id, bool? Protected);
 
 public sealed record DailyLogDto(
     DateOnly Date, decimal? BbtCelsius, bool BbtOutlier,
-    CervicalMucus? CervicalMucus, LhTest? LhTest,
+    CervicalMucus? CervicalMucus, LhTest? LhTest, decimal? LhValue,
     CrampType? CrampType, short? CrampSeverity, FlowIntensity? FlowIntensity,
     bool PeriodStart, IReadOnlyList<Mood> Moods, IReadOnlyList<IntercourseDto> Intercourse,
     DateTimeOffset? UpdatedAt, string? UpdatedBy);
@@ -31,7 +31,7 @@ public sealed record TrendsStatsDto(double AverageLength, int MinLength, int Max
     double StdDev, double? AverageLuteal, int LoggedPercent);
 public sealed record TrendCycleDto(DateOnly StartDate, int LengthDays, int DeviationFromAverage,
     int? LutealLength, bool Anovulatory, TimingSummaryDto Timing);
-public sealed record BbtMarksDto(CervicalMucus? CervicalMucus, LhTest? LhTest);
+public sealed record BbtMarksDto(CervicalMucus? CervicalMucus, LhTest? LhTest, decimal? LhValue);
 public sealed record BbtRowDto(DateOnly Date, int CycleDay, decimal? Value, decimal? DeltaFromCoverline,
     bool IsOutlier, bool AboveCoverline, BbtMarksDto Marks);
 public sealed record TrendsBbtDto(decimal? Coverline, bool OvulationConfirmed,
@@ -41,7 +41,7 @@ public sealed record TrendsDto(TrendsStatsDto? Stats, IReadOnlyList<TrendCycleDt
 
 public sealed record MonthRangeDto(string FirstMonth, string LastMonth);
 public sealed record CalendarDayDto(DateOnly Date, int? CycleDay, DayCategory Category,
-    bool HasBbt, int IntercourseCount, bool HasAnyEntry, bool IsToday);
+    bool HasBbt, int IntercourseCount, bool HasAnyEntry, bool IsToday, bool IsProjected);
 public sealed record CalendarDto(string Month, MonthRangeDto Range, int? CycleDayOfToday,
     bool HasData, IReadOnlyList<CalendarDayDto> Days);
 

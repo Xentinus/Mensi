@@ -1,5 +1,5 @@
 import type { DailyLog } from '~/types/api'
-import { CRAMP_SEVERITY_LABELS, CRAMP_TYPE_LABELS, FLOW_LABELS, LH_LABELS, MOOD_EMOJI, MOOD_LABELS, MUCUS_LABELS, type FieldKey } from '~/utils/labels'
+import { CRAMP_SEVERITY_LABELS, CRAMP_TYPE_LABELS, FLOW_LABELS, LH_LABELS, MOOD_EMOJI, MOOD_LABELS, MUCUS_LABELS, formatLhValue, type FieldKey } from '~/utils/labels'
 import { formatTemp } from '~/utils/format'
 
 /** A napló egy mezőjének kijelzett értéke; null = nincs rögzítve.
@@ -13,7 +13,7 @@ export function fieldValue(log: DailyLog | null, key: FieldKey): string | null {
     case 'mucus':
       return log.cervicalMucus ? MUCUS_LABELS[log.cervicalMucus] : null
     case 'lh':
-      return log.lhTest ? LH_LABELS[log.lhTest] : null
+      return formatLhValue(log.lhValue) ?? (log.lhTest ? LH_LABELS[log.lhTest] : null)
     case 'cramp':
       if (log.crampSeverity === null) return null
       if (log.crampSeverity === 0) return 'Nincs'

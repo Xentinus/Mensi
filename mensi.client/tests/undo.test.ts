@@ -8,6 +8,7 @@ const before: DailyLog = {
   bbtOutlier: false,
   cervicalMucus: 'dry',
   lhTest: 'negative',
+  lhValue: 0.15,
   crampType: 'abdomen',
   crampSeverity: 2,
   flowIntensity: null,

@@ -13,6 +13,9 @@ public static class ReadModelBuilder
     /// <summary>A naptár-navigáció visszamenőleges horizontja években (historikus feltöltéshez).</summary>
     public const int BackfillYears = 5;
 
+    /// <summary>Ennyi hónapra előre navigálható a naptár az előrevetített ciklusok mentén.</summary>
+    public const int ForecastMonths = 12;
+
     public const string ConfidenceNote =
         "A becslés a Wilcox-féle napi valószínűségeken és az ovuláció-posterioron alapul; "
         + "a sáv a lezárt ciklusok számával szűkül.";
@@ -22,7 +25,7 @@ public static class ReadModelBuilder
     private static DailyLogSnapshot Snapshot(DailyLog l) => new(
         l.Date, l.BbtCelsius, l.CervicalMucus, l.LhTest, l.CrampType, l.CrampSeverity,
         l.FlowIntensity, l.PeriodStart, l.Intercourse.Count,
-        l.Intercourse.Count(i => i.Protected != true));
+        l.Intercourse.Count(i => i.Protected != true), l.LhValue);
 
     private static bool HasAnyEntry(DailyLog l) =>
         l.BbtCelsius is not null || l.CervicalMucus is not null || l.LhTest is not null
@@ -73,13 +76,14 @@ public static class ReadModelBuilder
     }
 
     private static DailyLogDto Map(DailyLog l, bool outlier) => new(
-        l.Date, l.BbtCelsius, outlier, l.CervicalMucus, l.LhTest, l.CrampType,
+        l.Date, l.BbtCelsius, outlier, l.CervicalMucus, l.LhTest,
+        LhScale.Resolve(l.LhValue, l.LhTest), l.CrampType,
         l.CrampSeverity, l.FlowIntensity, l.PeriodStart, l.Moods,
         l.Intercourse.OrderBy(i => i.Id).Select(i => new IntercourseDto(i.Id, i.Protected)).ToList(),
         l.UpdatedAt == default ? null : l.UpdatedAt, l.UpdatedBy == "" ? null : l.UpdatedBy);
 
     private static DailyLogDto Empty(DateOnly date) =>
-        new(date, null, false, null, null, null, null, null, false, [], [], null, null);
+        new(date, null, false, null, null, null, null, null, null, false, [], [], null, null);
 
     public static IReadOnlyList<DailyLogDto> MapRange(ModelInput input, DateOnly from, DateOnly to)
     {
@@ -114,12 +118,15 @@ public static class ReadModelBuilder
         return prediction?.Categorize(date) ?? DayCategory.Unknown;
     }
 
-    private static int? CycleDayOf(ModelInput input, DateOnly date)
+    private static int? CycleDayOf(ModelInput input, CyclePrediction? prediction, DateOnly date)
     {
         var cycle = input.Cycles.LastOrDefault(c => c.StartDate <= date);
         if (cycle is null) return null;
         var day = date.DayNumber - cycle.StartDate.DayNumber + 1;
-        return cycle.LengthDays is int len && day > len ? null : day;
+        if (cycle.LengthDays is int len) return day > len ? null : day;
+        // Nyitott ciklus: a becsült menstruáció után már az előrevetített ciklus számoz,
+        // különben a jövőbeli napok a nyitott ciklus 60., 90. napjaként jelennének meg.
+        return prediction?.ProjectedCycleDay(date) ?? day;
     }
 
     private static double Percent(double chance) => Math.Round(chance * 100, 1);
@@ -147,7 +154,7 @@ public static class ReadModelBuilder
         var stripDays = Enumerable.Range(0, 35).Select(i =>
         {
             var date = stripFrom.AddDays(i);
-            return new StripDayDto(date, CycleDayOf(input, date),
+            return new StripDayDto(date, CycleDayOf(input, prediction, date),
                 Categorize(input, prediction, date), date == input.Today);
         }).ToList();
 
@@ -233,7 +240,8 @@ public static class ReadModelBuilder
                 return new BbtRowDto(current.StartDate.AddDays(d - 1), d, value,
                     value is not null && a.Coverline is not null ? value - a.Coverline : null,
                     a.OutlierDays.Contains(d), a.AboveCoverlineDays.Contains(d),
-                    new BbtMarksDto(log?.CervicalMucus, log?.LhTest));
+                    new BbtMarksDto(log?.CervicalMucus, log?.LhTest,
+                        LhScale.Resolve(log?.LhValue, log?.LhTest)));
             }).ToList();
             bbt = new TrendsBbtDto(a.Coverline, a.ConfirmedOvulationDay is not null,
                 a.ConfirmedOvulationDay is int o ? current.StartDate.AddDays(o - 1) : null,
@@ -256,10 +264,11 @@ public static class ReadModelBuilder
         {
             var date = first.AddDays(i);
             logByDate.TryGetValue(date, out var log);
-            return new CalendarDayDto(date, CycleDayOf(input, date),
+            return new CalendarDayDto(date, CycleDayOf(input, prediction, date),
                 Categorize(input, prediction, date),
                 log?.BbtCelsius is not null, log?.Intercourse.Count ?? 0,
-                log is not null && HasAnyEntry(log), date == input.Today);
+                log is not null && HasAnyEntry(log), date == input.Today,
+                prediction?.ProjectedFor(date) is not null);
         }).ToList();
 
         // A naptár visszamenőleg is bejárható: az alsó határ a legkorábbi bejegyzés vagy
@@ -268,12 +277,15 @@ public static class ReadModelBuilder
         var backfillHorizon = input.Today.AddYears(-BackfillYears);
         var firstLog = input.Logs.Count > 0 ? input.Logs[0].Date : input.Today;
         var firstMonth = firstLog < backfillHorizon ? firstLog : backfillHorizon;
-        var lastMonth = input.Today.AddMonths(1);
+        // Előre annyi hónap járható be, ameddig az előrevetített ciklusok érnek — a naptár
+        // a jövőbeli menstruációt és ovulációt is megmutatja.
+        var lastMonth = input.Today.AddMonths(ForecastMonths);
         return new CalendarDto(
             $"{year:D4}-{month:D2}",
             new MonthRangeDto($"{firstMonth.Year:D4}-{firstMonth.Month:D2}",
                 $"{lastMonth.Year:D4}-{lastMonth.Month:D2}"),
-            input.Today.Year == year && input.Today.Month == month ? CycleDayOf(input, input.Today) : null,
+            input.Today.Year == year && input.Today.Month == month
+                ? CycleDayOf(input, prediction, input.Today) : null,
             days.Any(d => d.HasAnyEntry), days);
     }
 

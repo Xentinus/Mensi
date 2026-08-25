@@ -6,6 +6,10 @@ public class DailyLog
     public decimal? BbtCelsius { get; set; }
     public CervicalMucus? CervicalMucus { get; set; }
     public LhTest? LhTest { get; set; }
+
+    /// <summary>A tesztcsík / kontrollcsík arány 0–1 skálán. A háromértékű <see cref="LhTest"/>
+    /// ebből származtatott — az importált (Low/High/Peak) adatoknál viszont csak az enum van meg.</summary>
+    public decimal? LhValue { get; set; }
     public CrampType? CrampType { get; set; }
     public short? CrampSeverity { get; set; }
     public FlowIntensity? FlowIntensity { get; set; }

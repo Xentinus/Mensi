@@ -1,6 +1,7 @@
 using Mensi.Core.Api;
 using Mensi.Core.Data;
 using Mensi.Core.Domain;
+using Mensi.Core.Prediction;
 using Mensi.Core.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,6 +65,8 @@ public static class ApiEndpoints
         if (date > today) return Problem("Jövőbeli napra nem rögzíthető bejegyzés.");
         if (request.BbtCelsius is { IsSet: true, Value: not null and (< 35.00m or > 38.99m) })
             return Problem("A testhő 35,00 és 38,99 °C között adható meg.");
+        if (request.LhValue is { IsSet: true, Value: not null and (< 0m or > 1m) })
+            return Problem("Az LH-teszt értéke 0 és 1 között adható meg.");
         if (request.CrampSeverity is { IsSet: true, Value: not null and (< 0 or > 3) })
             return Problem("A görcs erőssége 0 és 3 között adható meg.");
         if (request.Moods is { IsSet: true, Value: not null } moods
@@ -96,6 +99,15 @@ public static class ApiEndpoints
         Apply(request.BbtCelsius, "bbtCelsius", l => l.BbtCelsius, (l, v) => l.BbtCelsius = v);
         Apply(request.CervicalMucus, "cervicalMucus", l => l.CervicalMucus, (l, v) => l.CervicalMucus = v);
         Apply(request.LhTest, "lhTest", l => l.LhTest, (l, v) => l.LhTest = v);
+        // Az arány a vezető adat: beállításakor a háromértékű besorolás belőle származik,
+        // hogy az importált (enum-only) és a csúszkával rögzített napok egy skálán legyenek.
+        if (request.LhValue.IsSet)
+        {
+            var next = request.LhValue.Value;
+            Apply(request.LhValue, "lhValue", l => l.LhValue, (l, v) => l.LhValue = v);
+            var derived = next is decimal d ? LhScale.ToTest(d) : (LhTest?)null;
+            Apply(Patch<LhTest?>.Of(derived), "lhTest", l => l.LhTest, (l, v) => l.LhTest = v);
+        }
         Apply(request.CrampType, "crampType", l => l.CrampType, (l, v) => l.CrampType = v);
         Apply(request.CrampSeverity, "crampSeverity", l => l.CrampSeverity, (l, v) => l.CrampSeverity = v);
         Apply(request.FlowIntensity, "flowIntensity", l => l.FlowIntensity, (l, v) => l.FlowIntensity = v);

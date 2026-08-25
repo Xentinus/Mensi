@@ -70,6 +70,7 @@ const LEGEND = [
   { label: 'Termékeny', bg: CAL_COLORS.fertile.bg },
   { label: 'Ovulációs ablak', bg: CAL_COLORS.ovulation.bg },
   { label: 'Luteális', bg: CAL_COLORS.luteal.bg },
+  { label: 'Becsült mens', bg: CAL_COLORS.predictedPeriod.bg },
   { label: 'Ma', bg: 'var(--primary)' },
 ]
 
@@ -186,11 +187,12 @@ function cancelImport() {
       <div class="grid">
         <div v-for="w in WEEK_HEADS" :key="w" class="weekhead">{{ w }}</div>
         <div v-for="i in leadingBlanks" :key="`blank-${i}`" />
-        <button v-for="day in current.days" :key="day.date" class="cell" :style="{
-          background: day.date === selectedDate ? 'var(--primary)' : CAL_COLORS[day.category].bg,
-          color: day.date === selectedDate ? '#ffffff' : CAL_COLORS[day.category].fg,
-          boxShadow: day.isToday && day.date !== selectedDate ? 'inset 0 0 0 2px var(--primary)' : 'none',
-        }" @click="select(day.date)">
+        <button v-for="day in current.days" :key="day.date" class="cell"
+          :class="{ projected: day.isProjected && day.date !== selectedDate }" :style="{
+            background: day.date === selectedDate ? 'var(--primary)' : CAL_COLORS[day.category].bg,
+            color: day.date === selectedDate ? '#ffffff' : CAL_COLORS[day.category].fg,
+            boxShadow: day.isToday && day.date !== selectedDate ? 'inset 0 0 0 2px var(--primary)' : 'none',
+          }" @click="select(day.date)">
           <span class="cell-num" :class="{ bold: day.isToday || day.date === selectedDate }">{{ dayNum(day.date) }}</span>
           <span class="cell-dots">
             <span v-if="day.hasBbt" class="cell-dot" :style="{ background: day.date === selectedDate ? '#fff' : '#7c82a6' }" />
@@ -213,17 +215,21 @@ function cancelImport() {
         <span class="chip sel-chip">{{ selectedDay?.cycleDay ? `${selectedDay.cycleDay}. ciklusnap` : 'cikluson kívül' }}</span>
       </div>
       <div v-if="isFutureSelected" class="sel-empty">Ez a nap még előttünk áll — bejegyzés majd aznap rögzíthető.</div>
-      <div v-else-if="!selHasAny" class="sel-empty">Ezen a napon nincs bejegyzés.
-        <button class="sel-add" @click="store.openSheet(selectedDate, 0, false)">Rögzítés</button>
-      </div>
-      <div v-else class="sel-rows">
-        <button v-for="row in selRows" :key="row.key" class="sel-row" :class="{ set: row.value !== null }"
-          @click="store.openSheet(selectedDate, row.i, true)">
-          <span class="sel-label">{{ row.label }}</span>
-          <span class="sel-value" :class="{ set: row.value !== null }">{{ row.value ?? 'nincs adat' }}</span>
-          <span class="sel-action">{{ row.value !== null ? 'módosítás' : 'rögzítés' }}</span>
-        </button>
-      </div>
+      <template v-else>
+        <!-- Üres napon is a mezőlista jön, nem egy „Rögzítés” gomb: így egyetlen adat
+             felviteléhez sem kell végiglépegetni a nyolc lépésen. -->
+        <div v-if="!selHasAny" class="sel-sub">Ezen a napon még nincs bejegyzés — koppints arra a
+          mezőre, amelyiket rögzítenéd.</div>
+        <div class="sel-rows">
+          <button v-for="row in selRows" :key="row.key" class="sel-row" :class="{ set: row.value !== null }"
+            @click="store.openSheet(selectedDate, row.i, true)">
+            <span class="sel-label">{{ row.label }}</span>
+            <span class="sel-value" :class="{ set: row.value !== null }">{{ row.value ?? 'nincs adat' }}</span>
+            <span class="sel-action">{{ row.value !== null ? 'módosítás' : 'rögzítés' }}</span>
+          </button>
+        </div>
+        <button class="sel-add-all" @click="store.openSheet(selectedDate, 0, false)">Mind végigkérdezése</button>
+      </template>
     </div>
 
     <div class="card">
@@ -306,6 +312,9 @@ function cancelImport() {
   aspect-ratio: 1; border-radius: 12px; border: 0; cursor: pointer; font-family: inherit;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
 }
+/* Előrevetített nap: a szín a fázist mutatja, a halványítás és a szaggatott keret azt,
+   hogy ez már nem a nyitott ciklus mérésein, hanem az átlagos ciklushosszon alapul. */
+.cell.projected { opacity: .66; outline: 1px dashed rgba(90,92,214,.45); outline-offset: -2px; }
 .cell-num { font-size: 12.5px; font-weight: 500; }
 .cell-num.bold { font-weight: 700; }
 .cell-dots { display: flex; gap: 3px; height: 4px; }
@@ -316,7 +325,11 @@ function cancelImport() {
 .sel-head { display: flex; align-items: baseline; }
 .sel-chip { margin-left: auto; color: var(--primary); background: var(--tint); font-size: 11.5px; }
 .sel-empty { margin-top: 14px; padding: 26px 14px; border-radius: 14px; background: #f5f7fe; text-align: center; font-size: 13px; color: var(--ink-2); }
-.sel-add { display: block; margin: 12px auto 0; border: 0; background: var(--tint); color: var(--primary-deep); font: 700 12px 'Montserrat', sans-serif; border-radius: 99px; padding: 9px 18px; cursor: pointer; }
+.sel-sub { margin-top: 6px; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
+.sel-add-all {
+  width: 100%; margin-top: 12px; border: 0; background: var(--tint); color: var(--primary-deep);
+  font: 700 13px 'Montserrat', sans-serif; border-radius: 12px; padding: 13px 0; cursor: pointer;
+}
 .import-sub { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; margin-top: 6px; }
 .import-error { margin-top: 12px; font-size: 12.5px; color: #b3261e; }
 .import-preview { margin-top: 14px; background: var(--surface); border-radius: 14px; padding: 13px 14px; display: flex; flex-direction: column; gap: 6px; }
